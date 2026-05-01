@@ -15,15 +15,21 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Ana Sayfa',
+        }}
+      />
+      <Tabs.Screen
         name="recipes"
         options={{
           title: 'Tarifler',
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="camera"
         options={{
-          title: 'Ana Sayfa',
+          title: 'Kamera',
         }}
       />
       <Tabs.Screen

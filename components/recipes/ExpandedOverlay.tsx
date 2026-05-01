@@ -39,9 +39,9 @@ interface Props {
 }
 
 const SPRING_CONFIG = {
-  mass: 0.7,
-  damping: 18,
-  stiffness: 180,
+  mass: 0.8,
+  damping: 20,
+  stiffness: 200,
 };
 
 /**
@@ -63,12 +63,12 @@ const ExpandedOverlay = React.memo(({
       progress.value = withSpring(1, SPRING_CONFIG);
       translateY.value = 0;
     } else {
-      progress.value = withTiming(0, { duration: 200 });
+      progress.value = withTiming(0, { duration: 300 });
     }
   }, [visible]);
 
   const handleClose = useCallback(() => {
-    progress.value = withTiming(0, { duration: 200 }, (finished) => {
+    progress.value = withTiming(0, { duration: 250 }, (finished) => {
       if (finished) {
         runOnJS(onClose)();
       }
@@ -221,30 +221,6 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  placeholderText: {
-    fontFamily: typography.bodyFont,
-    fontSize: typography.body,
-    color: colors.textMuted,
-    textAlign: 'center',
-  },
-});
-
-export default ExpandedOverlay;
-roundColor: colors.borderSubtle,
-    marginHorizontal: spacing.xl,
-  },
-  content: {
-    flex: 1,
-  },
-  scrollList: {
-    paddingHorizontal: spacing.xl,
-    paddingBottom: spacing.xl,
-  },
-  itemDivider: {
-    height: 1,
-    backgroundColor: colors.borderSubtle,
-    opacity: 0.5,
   },
   placeholderText: {
     fontFamily: typography.bodyFont,

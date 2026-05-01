@@ -102,14 +102,3 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
 });
-   marginBottom: spacing.xxl,
-  },
-  row: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    marginBottom: spacing.md,
-  },
-  largeWidget: {
-    marginBottom: spacing.md,
-  },
-});

@@ -1,4 +1,5 @@
 # 📋 PROJECT_CONTEXT.md
+
 # Yemek Tarifi & Kalori Takip Uygulaması — Oturum Takip Logu
 
 > **Gemini CLI Kullanım Talimatı:**
@@ -12,8 +13,8 @@
 
 ```
 Toplam Adım : 15
-Tamamlanan  : 9
-Kalan       : 6
+Tamamlanan  : 14
+Kalan       : 1
 Son Güncelleme: 01.05.2026
 ```
 
@@ -22,6 +23,7 @@ Son Güncelleme: 01.05.2026
 ## ✅ Tamamlanan Adımlar
 
 ### Adım 1 — Proje iskeleti + klasör yapısı + constants
+
 - Tarih: 01.05.2026 10:00
 - Durum: ✅ Tamamlandı
 - Oluşturulan dosyalar:
@@ -32,6 +34,7 @@ Son Güncelleme: 01.05.2026
 - Notlar: Temel renk, tipografi, spacing ve gölge sabitleri PROJECT_SPEC.md'ye uygun olarak oluşturuldu.
 
 ### Adım 2 — TypeScript tip tanımları (types/)
+
 - Tarih: 01.05.2026 10:15
 - Durum: ✅ Tamamlandı
 - Oluşturulan dosyalar:
@@ -41,6 +44,7 @@ Son Güncelleme: 01.05.2026
 - Notlar: Uygulama genelinde kullanılacak veri yapıları ve servis tipleri tanımlandı.
 
 ### Adım 3 — Mock servisler ve mock veri
+
 - Tarih: 01.05.2026 10:30
 - Durum: ✅ Tamamlandı
 - Oluşturulan dosyalar:
@@ -52,6 +56,7 @@ Son Güncelleme: 01.05.2026
 - Notlar: Uygulamanın veri ve servis katmanı mock olarak hazırlandı.
 
 ### Adım 4 — Zustand store'ları
+
 - Tarih: 01.05.2026 10:45
 - Durum: ✅ Tamamlandı
 - Oluşturulan dosyalar:
@@ -60,6 +65,7 @@ Son Güncelleme: 01.05.2026
 - Notlar: Favori yönetimi ve kalori analizi için state yönetim katmanı Zustand ile kuruldu.
 
 ### Adım 5 — Shared components (AnimatedPressable, GlassContainer)
+
 - Tarih: 01.05.2026 11:00
 - Durum: ✅ Tamamlandı
 - Oluşturulan dosyalar:
@@ -68,14 +74,16 @@ Son Güncelleme: 01.05.2026
 - Notlar: Uygulama genelinde kullanılacak temel UI bileşenleri Reanimated ve expo-blur ile oluşturuldu.
 
 ### Adım 6 — Custom Bottom Tab Navigator
+
 - Tarih: 01.05.2026 11:15
 - Durum: ✅ Tamamlandı
 - Oluşturulan dosyalar:
   - components/navigation/CustomBottomTab.tsx
-  - app/(tabs)/_layout.tsx
+  - app/(tabs)/\_layout.tsx
 - Notlar: Yüzen, Glassmorphism etkili ve animasyonlu alt navigasyon barı kuruldu.
 
 ### Adım 7 — Recipes ekranı — WidgetCard (animasyonsuz)
+
 - Tarih: 01.05.2026 11:30
 - Durum: ✅ Tamamlandı
 - Oluşturulan dosyalar:
@@ -84,6 +92,7 @@ Son Güncelleme: 01.05.2026
 - Notlar: Recipes ana ekranı ve temel widget kartı yapısı oluşturuldu.
 
 ### Adım 8 — ExpandedOverlay animasyonu
+
 - Tarih: 01.05.2026 12:00
 - Durum: ✅ Tamamlandı
 - Oluşturulan dosyalar:
@@ -91,6 +100,7 @@ Son Güncelleme: 01.05.2026
 - Notlar: Widget genişleme animasyonu Reanimated, Modal ve PanGestureHandler ile kuruldu.
 
 ### Adım 9 — RecipeListItem + FavoriteButton
+
 - Tarih: 01.05.2026 12:30
 - Durum: ✅ Tamamlandı
 - Oluşturulan dosyalar:
@@ -99,35 +109,87 @@ Son Güncelleme: 01.05.2026
   - hooks/useFavorites.ts
 - Notlar: Tarif liste öğeleri ve animasyonlu favori butonu sisteme entegre edildi. CP-3 denetimi bekleniyor.
 
+### Adım 10 — Home ekranı — FilterChip + RecipeSearchBox
+
+- Tarih: 01.05.2026 13:00
+- Durum: ✅ Tamamlandı
+- Oluşturulan dosyalar:
+  - components/home/FilterChip.tsx
+  - components/home/FilterChipRow.tsx
+  - components/home/RecipeSearchBox.tsx
+  - app/(tabs)/index.tsx
+- Notlar: Ana ekran, yatayda kayan filtre çipleri ve LLM destekli arama kutusu ile oluşturuldu. Navigasyon sırası güncellendi.
+
+### Adım 11 — CameraCapture + LoadingAnalysis
+
+- Tarih: 01.05.2026 13:15
+- Durum: ✅ Tamamlandı
+- Oluşturulan dosyalar:
+  - components/camera/CameraCapture.tsx
+  - components/camera/LoadingAnalysis.tsx
+  - app/camera.tsx
+  - assets/animations/loading.json
+- Notlar: Fotoğraf çekme, analiz yükleme ekranı ve ilgili servis entegrasyonları tamamlandı. Kamera sekmesi navigasyona eklendi.
+
+### Adım 12 — CalorieResult ekranı (Bubble Cloud)
+
+- Tarih: 01.05.2026 13:45
+- Durum: ✅ Tamamlandı
+- Oluşturulan dosyalar:
+  - components/calorie/CalorieBubble.tsx
+  - components/calorie/BubbleCloud.tsx
+  - components/calorie/SuggestionCard.tsx
+  - app/calorie-result.tsx
+- Notlar: Kalori sonuç ekranı, PROJECT_SPEC.md'ye uygun olarak animasyonlu ve etkileşimli baloncuk tasarımıyla yeniden oluşturuldu.
+
+### Adım 13 — Settings placeholder
+
+- Tarih: 01.05.2026 13:50
+- Durum: ✅ Tamamlandı
+- Oluşturulan dosyalar:
+  - app/(tabs)/settings.tsx
+- Notlar: Gelecekteki ayar seçenekleri için basit bir yer tutucu ekran oluşturuldu.
+
+### Adım 14 — Animasyonların ince ayarı
+
+- Tarih: 01.05.2026 14:00
+- Durum: ✅ Tamamlandı
+- Değiştirilen dosyalar:
+  - components/recipes/ExpandedOverlay.tsx
+  - components/recipes/FavoriteButton.tsx
+  - components/calorie/CalorieBubble.tsx
+  - components/home/FilterChip.tsx
+- Notlar: Uygulama genelindeki animasyonların (Spring ve Timing) fizik parametreleri, PROJECT_SPEC.md'de belirtilen "Animasyon Detayları" bölümüne uygun olarak güncellendi. Bu, daha tutarlı ve rafine bir kullanıcı deneyimi sağladı.
+
 ---
 
 ## 🔄 Devam Eden / Yarım Kalan
 
 <!-- Gemini: bir adım yarım kalırsa buraya taşı -->
 
-*Yok.*
+_Yok._
 
 ---
 
 ## ⏳ Bekleyen Adımlar
 
-| # | Adım | Durum |
-|---|------|-------|
-| 1 | Proje iskeleti + klasör yapısı + constants | ✅ Tamamlandı |
-| 2 | TypeScript tip tanımları (types/) | ✅ Tamamlandı |
-| 3 | Mock servisler ve mock veri | ✅ Tamamlandı |
-| 4 | Zustand store'ları | ✅ Tamamlandı |
-| 5 | Shared components (AnimatedPressable, GlassContainer) | ✅ Tamamlandı |
-| 6 | Custom Bottom Tab Navigator | ✅ Tamamlandı |
-| 7 | Recipes ekranı — WidgetCard (animasyonsuz) | ✅ Tamamlandı |
-| 8 | ExpandedOverlay animasyonu | ✅ Tamamlandı |
-| 9 | RecipeListItem + FavoriteButton | ✅ Tamamlandı |
-| 10 | Home ekranı — FilterChip + RecipeSearchBox | ⬜ Bekliyor |
-| 11 | CameraCapture + LoadingAnalysis | ⬜ Bekliyor |
-| 12 | CalorieResult ekranı (3 alt component) | ⬜ Bekliyor |
-| 13 | Settings placeholder | ⬜ Bekliyor |
-| 14 | Animasyonların ince ayarı | ⬜ Bekliyor |
-| 15 | Accessibility eklemeleri | ⬜ Bekliyor |
+| #   | Adım                                                  | Durum         |
+| --- | ----------------------------------------------------- | ------------- |
+| 1   | Proje iskeleti + klasör yapısı + constants            | ✅ Tamamlandı |
+| 2   | TypeScript tip tanımları (types/)                     | ✅ Tamamlandı |
+| 3   | Mock servisler ve mock veri                           | ✅ Tamamlandı |
+| 4   | Zustand store'ları                                    | ✅ Tamamlandı |
+| 5   | Shared components (AnimatedPressable, GlassContainer) | ✅ Tamamlandı |
+| 6   | Custom Bottom Tab Navigator                           | ✅ Tamamlandı |
+| 7   | Recipes ekranı — WidgetCard (animasyonsuz)            | ✅ Tamamlandı |
+| 8   | ExpandedOverlay animasyonu                            | ✅ Tamamlandı |
+| 9   | RecipeListItem + FavoriteButton                       | ✅ Tamamlandı |
+| 10  | Home ekranı — FilterChip + RecipeSearchBox            | ✅ Tamamlandı |
+| 11  | CameraCapture + LoadingAnalysis                       | ✅ Tamamlandı |
+| 12  | CalorieResult ekranı (Bubble Cloud)                   | ✅ Tamamlandı |
+| 13  | Settings placeholder                                  | ✅ Tamamlandı |
+| 14  | Animasyonların ince ayarı                             | ✅ Tamamlandı |
+| 15  | Accessibility eklemeleri                              | ⬜ Bekliyor   |
 
 ---
 
@@ -140,8 +202,24 @@ project-root/
 ├── app/
 │   └── (tabs)/
 │       ├── _layout.tsx
-│       └── recipes.tsx
+│       ├── index.tsx
+│       ├── recipes.tsx
+│       └── settings.tsx
+├── assets/
+│   └── animations/
+│       └── loading.json
 ├── components/
+│   ├── calorie/
+│   │   ├── BubbleCloud.tsx
+│   │   ├── CalorieBubble.tsx
+│   │   └── SuggestionCard.tsx
+│   ├── camera/
+│   │   ├── CameraCapture.tsx
+│   │   └── LoadingAnalysis.tsx
+│   ├── home/
+│   │   ├── FilterChip.tsx
+│   │   ├── FilterChipRow.tsx
+│   │   └── RecipeSearchBox.tsx
 │   ├── navigation/
 │   │   └── CustomBottomTab.tsx
 │   ├── recipes/
@@ -182,7 +260,7 @@ project-root/
 
 <!-- Gemini: hata, geçici çözüm veya önemli kararlar buraya -->
 
-*Yok.*
+_Yok._
 
 ---
 

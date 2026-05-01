@@ -37,11 +37,11 @@ const FavoriteButton = React.memo(({ recipeId, size = 24 }: Props) => {
     toggleFavorite(recipeId);
     
     // Animasyonlar
-    scale.value = withSpring(1.4, { mass: 0.3, damping: 8 }, () => {
+    scale.value = withSpring(1.4, { mass: 0.5, damping: 10, stiffness: 150 }, () => {
       scale.value = withSpring(1);
     });
     
-    colorProgress.value = withTiming(active ? 0 : 1, { duration: 300 });
+    colorProgress.value = withTiming(active ? 0 : 1, { duration: 350 });
   }, [recipeId, toggleFavorite, active]);
 
   const animatedStyle = useAnimatedStyle(() => ({
