@@ -12,9 +12,9 @@
 
 ```
 Toplam Adım : 15
-Tamamlanan  : 9
-Kalan       : 6
-Son Güncelleme: 01.05.2026
+Tamamlanan  : 10
+Kalan       : 5
+Son Güncelleme: 09.05.2026
 ```
 
 ---
@@ -97,7 +97,17 @@ Son Güncelleme: 01.05.2026
   - components/recipes/RecipeListItem.tsx
   - components/recipes/FavoriteButton.tsx
   - hooks/useFavorites.ts
-- Notlar: Tarif liste öğeleri ve animasyonlu favori butonu sisteme entegre edildi. CP-3 denetimi bekleniyor.
+- Notlar: Tarif liste öğeleri ve animasyonlu favori butonu sisteme entegre edildi.
+
+### Adım 10 — Home ekranı — FilterChip + RecipeSearchBox
+- Tarih: 09.05.2026 14:00
+- Durum: ✅ Tamamlandı
+- Oluşturulan dosyalar:
+  - components/home/FilterChip.tsx
+  - components/home/FilterChipRow.tsx
+  - components/home/RecipeSearchBox.tsx
+  - app/(tabs)/index.tsx
+- Notlar: Ana sayfa iskeleti, çoklu seçim destekli filtreler ve LLM entegrasyonlu arama kutusu tamamlandı.
 
 ---
 
@@ -122,7 +132,7 @@ Son Güncelleme: 01.05.2026
 | 7 | Recipes ekranı — WidgetCard (animasyonsuz) | ✅ Tamamlandı |
 | 8 | ExpandedOverlay animasyonu | ✅ Tamamlandı |
 | 9 | RecipeListItem + FavoriteButton | ✅ Tamamlandı |
-| 10 | Home ekranı — FilterChip + RecipeSearchBox | ⬜ Bekliyor |
+| 10 | Home ekranı — FilterChip + RecipeSearchBox | ✅ Tamamlandı |
 | 11 | CameraCapture + LoadingAnalysis | ⬜ Bekliyor |
 | 12 | CalorieResult ekranı (3 alt component) | ⬜ Bekliyor |
 | 13 | Settings placeholder | ⬜ Bekliyor |
@@ -140,8 +150,13 @@ project-root/
 ├── app/
 │   └── (tabs)/
 │       ├── _layout.tsx
+│       ├── index.tsx
 │       └── recipes.tsx
 ├── components/
+│   ├── home/
+│   │   ├── FilterChip.tsx
+│   │   ├── FilterChipRow.tsx
+│   │   └── RecipeSearchBox.tsx
 │   ├── navigation/
 │   │   └── CustomBottomTab.tsx
 │   ├── recipes/
