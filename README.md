@@ -163,4 +163,6 @@ recipeAI/
 
 - All AI and camera features are currently mocked. Replace the files in `services/` to connect real APIs.
 - The project targets the New Architecture (React Native 0.81 default). All dependencies are compatible.
+
+
 Made by Demokan Turan and Oğuz Kaan Kaya
