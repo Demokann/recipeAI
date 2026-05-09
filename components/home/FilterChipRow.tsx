@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { spacing } from '../../constants/spacing';
 import FilterChip from './FilterChip';
+import { useFilterStore } from '../../store/filterStore';
 
 const CHIPS = [
   "⚡ 15 dk'da Hazır",
@@ -19,19 +20,12 @@ const CHIPS = [
  * Çoklu seçimi destekler.
  */
 const FilterChipRow = React.memo(() => {
-  const [selectedChips, setSelectedChips] = useState<Set<string>>(new Set());
+  const selectedFilters = useFilterStore((state) => state.selectedFilters);
+  const toggleFilter = useFilterStore((state) => state.toggleFilter);
 
   const handlePress = useCallback((label: string) => {
-    setSelectedChips((prev) => {
-      const next = new Set(prev);
-      if (next.has(label)) {
-        next.delete(label);
-      } else {
-        next.add(label);
-      }
-      return next;
-    });
-  }, []);
+    toggleFilter(label);
+  }, [toggleFilter]);
 
   return (
     <ScrollView
@@ -43,7 +37,7 @@ const FilterChipRow = React.memo(() => {
         <FilterChip
           key={chip}
           label={chip}
-          selected={selectedChips.has(chip)}
+          selected={selectedFilters.includes(chip)}
           onPress={handlePress}
         />
       ))}

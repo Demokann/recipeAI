@@ -6,12 +6,12 @@ import { spacing } from '../../constants/spacing';
 import { typography } from '../../constants/typography';
 import { shadows } from '../../constants/shadows';
 import AnimatedPressable from '../shared/AnimatedPressable';
-import { mockCameraService } from '../../services/mockCameraService';
+import { cameraService } from '../../services/cameraService';
 import { useCalorieStore } from '../../store/calorieStore';
 
 /**
  * Kamera başlatma ve fotoğraf çekme işlemlerini yöneten bileşen.
- * mockCameraService kullanarak izin ve çekim süreçlerini simüle eder.
+ * cameraService kullanarak izin ve çekim süreçlerini simüle eder.
  */
 const CameraCapture = React.memo(() => {
   const analyzeImage = useCalorieStore((state) => state.analyzeImage);
@@ -19,14 +19,14 @@ const CameraCapture = React.memo(() => {
   const handleCapture = useCallback(async () => {
     try {
       // 1. İzin kontrolü
-      const hasPermission = await mockCameraService.requestPermission();
+      const hasPermission = await cameraService.requestPermission();
       if (!hasPermission) {
         Alert.alert('Hata', 'Kamera izni verilmedi.');
         return;
       }
 
       // 2. Fotoğraf çekimi (mock)
-      const imageUri = await mockCameraService.captureFood();
+      const imageUri = await cameraService.captureFood();
       
       // 3. Analiz başlatma
       if (imageUri) {

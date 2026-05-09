@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  useAnimatedProps,
   withTiming,
   Easing,
 } from 'react-native-reanimated';
@@ -11,43 +10,50 @@ import { colors } from '../../constants/colors';
 import { typography } from '../../constants/typography';
 import { spacing } from '../../constants/spacing';
 
-const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
-
 interface Props {
   totalCalories: number;
 }
 
 /**
  * Kalori analiz sonucunun büyük görsel özetini gösterir.
- * countUp animasyonu TextInput üzerinden Reanimated ile sağlanır.
+ * countUp animasyonu setState ile sağlanır (Fabric uyumlu).
  */
 const TotalCaloriesHeader = React.memo(({ totalCalories }: Props) => {
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(-20);
-  const countValue = useSharedValue(0);
+  const [displayCount, setDisplayCount] = useState(0);
 
   useEffect(() => {
-    opacity.value = withTiming(1, {
-      duration: 400,
-      easing: Easing.out(Easing.quad),
-    });
-    translateY.value = withTiming(0, {
-      duration: 400,
-      easing: Easing.out(Easing.quad),
-    });
-    countValue.value = withTiming(totalCalories, {
-      duration: 800,
-      easing: Easing.out(Easing.cubic),
-    });
-  }, [totalCalories, opacity, translateY, countValue]);
+    opacity.value = withTiming(1, { duration: 400, easing: Easing.out(Easing.quad) });
+    translateY.value = withTiming(0, { duration: 400, easing: Easing.out(Easing.quad) });
+
+    if (totalCalories <= 0) {
+      setDisplayCount(0);
+      return;
+    }
+
+    const duration = 800;
+    const fps = 60;
+    const totalFrames = Math.round((duration / 1000) * fps);
+    let frame = 0;
+
+    const interval = setInterval(() => {
+      frame++;
+      const progress = frame / totalFrames;
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplayCount(Math.round(eased * totalCalories));
+      if (frame >= totalFrames) {
+        setDisplayCount(totalCalories);
+        clearInterval(interval);
+      }
+    }, 1000 / fps);
+
+    return () => clearInterval(interval);
+  }, [totalCalories, opacity, translateY]);
 
   const containerStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
     transform: [{ translateY: translateY.value }],
-  }));
-
-  const animatedProps = useAnimatedProps(() => ({
-    value: `${Math.round(countValue.value)}`,
   }));
 
   return (
@@ -60,13 +66,13 @@ const TotalCaloriesHeader = React.memo(({ totalCalories }: Props) => {
         Toplam Kalori
       </Text>
 
-      <AnimatedTextInput
-        animatedProps={animatedProps}
-        editable={false}
+      <Text
         style={styles.number}
         accessibilityLabel={`${totalCalories} kalori`}
         accessibilityRole="text"
-      />
+      >
+        {displayCount}
+      </Text>
 
       <Text
         style={styles.unit}

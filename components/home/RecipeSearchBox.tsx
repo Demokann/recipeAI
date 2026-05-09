@@ -6,7 +6,8 @@ import { colors } from '../../constants/colors';
 import { spacing, radius } from '../../constants/spacing';
 import { typography } from '../../constants/typography';
 import { shadows } from '../../constants/shadows';
-import { mockLLMService } from '../../services/mockLLMService';
+import { suggestRecipes } from '../../services/geminiService';
+import { useFilterStore } from '../../store/filterStore';
 import { LLMResponse } from '../../types/recipe';
 import AnimatedPressable from '../shared/AnimatedPressable';
 import GlassContainer from '../shared/GlassContainer';
@@ -19,21 +20,24 @@ const RecipeSearchBox = React.memo(() => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<LLMResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const selectedFilters = useFilterStore((state) => state.selectedFilters);
 
   const handleSearch = useCallback(async () => {
     if (!input.trim() || loading) return;
 
     setLoading(true);
     setResult(null);
+    setError(null);
     try {
-      const response = await mockLLMService.query(input);
+      const response = await suggestRecipes(input, selectedFilters);
       setResult(response);
-    } catch (error) {
-      console.error(error);
+    } catch (err: any) {
+      setError(err.message || 'Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }
-  }, [input, loading]);
+  }, [input, loading, selectedFilters]);
 
   return (
     <View style={styles.outerContainer}>
@@ -67,14 +71,28 @@ const RecipeSearchBox = React.memo(() => {
         </View>
       </GlassContainer>
 
-      {result && (
-        <Animated.View 
-          entering={FadeInUp.springify()} 
+      {result && result.recipes.length > 0 && (
+        <Animated.View
+          entering={FadeInUp.springify()}
           layout={Layout.springify()}
           style={styles.resultContainer}
         >
-          <Text style={styles.resultTitle}>Önerimiz ✨</Text>
-          <Text style={styles.resultText}>{result.suggestion}</Text>
+          <Text style={styles.resultTitle}>Önerilen Tarifler ✨</Text>
+          {result.recipes.map((recipe, index) => (
+            <Text key={recipe.id} style={styles.resultText}>
+              {index + 1}. {recipe.name}
+            </Text>
+          ))}
+        </Animated.View>
+      )}
+
+      {error && (
+        <Animated.View
+          entering={FadeInUp.springify()}
+          layout={Layout.springify()}
+          style={[styles.resultContainer, styles.errorContainer]}
+        >
+          <Text style={styles.errorText}>{error}</Text>
         </Animated.View>
       )}
     </View>
@@ -137,6 +155,16 @@ const styles = StyleSheet.create({
     fontFamily: typography.bodyFont,
     fontSize: typography.caption,
     color: colors.textSecondary,
+    lineHeight: typography.caption * 1.4,
+  },
+  errorContainer: {
+    borderColor: '#FFCDD2',
+    backgroundColor: '#FFF5F5',
+  },
+  errorText: {
+    fontFamily: typography.bodyFont,
+    fontSize: typography.caption,
+    color: '#C62828',
     lineHeight: typography.caption * 1.4,
   },
 });

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { CalorieResult } from '../types/calorie';
-import { mockCalorieService } from '../services/mockCalorieService';
+import { analyzeFood } from '../services/geminiService';
 
 interface CalorieStore {
   currentResult: CalorieResult | null;
@@ -26,7 +26,7 @@ export const useCalorieStore = create<CalorieStore>((set) => ({
   analyzeImage: async (uri: string) => {
     set({ isAnalyzing: true, error: null });
     try {
-      const result = await mockCalorieService.analyzeFood(uri);
+      const result = await analyzeFood(uri);
       set({ currentResult: result, isAnalyzing: false });
     } catch (err: any) {
       set({
