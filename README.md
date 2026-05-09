@@ -8,7 +8,20 @@ Built with Expo SDK 54 and React Native 0.81.
 
 ## Screenshots
 
-> Coming soon.
+<table>
+  <tr>
+    <td align="center"><img src="assets/2.jpeg" width="200" alt="Recipes screen"/></td>
+    <td align="center"><img src="assets/1.jpeg" width="200" alt="Recipe list overlay"/></td>
+    <td align="center"><img src="assets/3.jpeg" width="200" alt="Home screen"/></td>
+    <td align="center"><img src="assets/4.jpeg" width="200" alt="Calorie result"/></td>
+  </tr>
+  <tr>
+    <td align="center">Recipes</td>
+    <td align="center">Recipe List</td>
+    <td align="center">Home</td>
+    <td align="center">Calorie Result</td>
+  </tr>
+</table>
 
 ---
 
