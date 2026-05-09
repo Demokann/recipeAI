@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "RecipeAI",
+    "slug": "recipeai",
+    "version": "1.0.0",
+    "scheme": "recipeai",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.recipeai.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#F5F0E8"
+      },
+      "package": "com.recipeai.app"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-camera"
+    ]
+  }
+}

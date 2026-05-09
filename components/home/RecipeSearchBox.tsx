@@ -45,6 +45,9 @@ const RecipeSearchBox = React.memo(() => {
           multiline
           value={input}
           onChangeText={setInput}
+          accessibilityLabel="Tarif veya malzeme ara"
+          accessibilityHint="Malzemelerini ya da ne yemek istediğini yaz, ardından gönder butonuna bas"
+          accessibilityRole="search"
         />
         
         <View style={styles.actionRow}>
@@ -55,6 +58,8 @@ const RecipeSearchBox = React.memo(() => {
               onPress={handleSearch}
               disabled={!input.trim()}
               style={styles.sendButton}
+              accessibilityLabel="Tarif ara"
+              accessibilityHint="Yapay zeka ile tarif önerisi al"
             >
               <Feather name="arrow-right" size={20} color="#FFFFFF" />
             </AnimatedPressable>

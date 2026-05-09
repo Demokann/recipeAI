@@ -65,7 +65,6 @@ interface TabItemProps {
 const TabItem = React.memo(({ isFocused, iconName, onPress }: TabItemProps) => {
   const animatedIconStyle = useAnimatedStyle(() => ({
     transform: [{ scale: withSpring(isFocused ? 1.15 : 1) }],
-    color: isFocused ? colors.accent : colors.textMuted,
   }));
 
   const animatedDotStyle = useAnimatedStyle(() => ({

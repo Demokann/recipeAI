@@ -61,6 +61,8 @@ const FilterChip = React.memo(({ label, selected, onPress }: Props) => {
       onPress={handlePress}
       style={[styles.container, animatedStyle]}
       scaleValue={0.95}
+      accessibilityLabel={label}
+      accessibilityState={{ selected }}
     >
       <Animated.Text style={[styles.text, animatedTextStyle]}>
         {label}

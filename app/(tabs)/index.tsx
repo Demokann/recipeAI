@@ -15,6 +15,7 @@ import FilterChipRow from '../../components/home/FilterChipRow';
 import RecipeSearchBox from '../../components/home/RecipeSearchBox';
 import CameraCapture from '../../components/home/CameraCapture';
 import LoadingAnalysis from '../../components/home/LoadingAnalysis';
+import CalorieResultCard from '../../components/home/CalorieResultCard';
 import { useCalorieStore } from '../../store/calorieStore';
 
 /**
@@ -60,14 +61,7 @@ export default function HomeScreen() {
             {!currentResult ? (
               <CameraCapture />
             ) : (
-              <View style={styles.resultPlaceholder}>
-                <Text style={styles.resultText}>
-                  Analiz Tamamlandı: {currentResult.foodName}
-                </Text>
-                <Text style={styles.resultSubtext}>
-                  (Sonuç ekranı Adım 12'de eklenecek)
-                </Text>
-              </View>
+              <CalorieResultCard result={currentResult} />
             )}
           </View>
         </ScrollView>
@@ -125,27 +119,5 @@ const styles = StyleSheet.create({
   },
   calorieSection: {
     paddingBottom: spacing.xxl,
-  },
-  resultPlaceholder: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.xxl,
-    marginHorizontal: spacing.xxl,
-    backgroundColor: colors.cardBg,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderStyle: 'dashed',
-  },
-  resultText: {
-    fontFamily: typography.bodyFontBold,
-    fontSize: typography.body,
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
-  },
-  resultSubtext: {
-    fontFamily: typography.bodyFont,
-    fontSize: typography.caption,
-    color: colors.textMuted,
   },
 });

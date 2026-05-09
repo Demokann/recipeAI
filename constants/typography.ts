@@ -6,11 +6,11 @@
 export const typography = {
   // Font aileleri (expo-google-fonts isimleri)
   displayFont: 'PlayfairDisplay_700Bold',
-  displayFontItalic: 'PlayfairDisplay_700BoldItalic',
+  displayFontItalic: 'PlayfairDisplay_700Bold_Italic',
   bodyFont: 'DMSans_400Regular',
   bodyFontMedium: 'DMSans_500Medium',
   bodyFontBold: 'DMSans_700Bold',
-  labelFont: 'DMSans_300Light',
+  labelFont: 'DMSans_400Regular', // DMSans_300Light pakette yok; 400Regular fallback
   // Boyut skalası
   display: 72,   // kalori sayısı gibi hero rakamlar
   heading1: 32,

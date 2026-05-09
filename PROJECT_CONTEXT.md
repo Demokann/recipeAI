@@ -12,8 +12,8 @@
 
 ```
 Toplam Adım : 15
-Tamamlanan  : 11
-Kalan       : 4
+Tamamlanan  : 15
+Kalan       : 0
 Son Güncelleme: 09.05.2026
 ```
 
@@ -117,6 +117,50 @@ Son Güncelleme: 09.05.2026
   - components/home/LoadingAnalysis.tsx
 - Notlar: Kamera mock akışı ve animasyonlu analiz yükleme ekranı sisteme dahil edildi.
 
+### Adım 12 — CalorieResult ekranı (3 alt component)
+- Tarih: 09.05.2026 15:00
+- Durum: ✅ Tamamlandı
+- Oluşturulan dosyalar:
+  - components/calorie/TotalCaloriesHeader.tsx
+  - components/calorie/CalorieBreakdownList.tsx
+  - components/calorie/NutrientCard.tsx
+  - components/home/CalorieResultCard.tsx
+- Notlar: countUp (TextInput animated), progress bar stagger (150ms×n), NutrientCard pop spring. index.tsx güncellendi.
+
+### Adım 13 — Settings placeholder
+- Tarih: 09.05.2026 15:00
+- Durum: ✅ Tamamlandı
+- Oluşturulan dosyalar:
+  - app/(tabs)/settings.tsx
+- Notlar: Minimal placeholder; ileriki versiyonda profil/dil/bildirim ayarları gelecek.
+
+### Adım 14 — Animasyonların ince ayarı
+- Tarih: 09.05.2026 15:10
+- Durum: ✅ Tamamlandı
+- Değiştirilen dosyalar:
+  - components/recipes/ExpandedOverlay.tsx — yeniden yazıldı: backdrop 300ms, content translateY 60→0 withSpring(50ms delay), list stagger +50ms, duplicate kod kaldırıldı
+  - components/recipes/FavoriteButton.tsx — iki katman cross-fade (filledOpacity) ile çalışan renk animasyonu; eski Animated.View color hack kaldırıldı
+  - app/(tabs)/recipes.tsx — duplicate styles kaldırıldı
+- Notlar: Spec animasyon sekansı (t=0/50/150ms) tam uygulandı.
+
+### Adım 15 — Accessibility eklemeleri
+- Tarih: 09.05.2026 15:15
+- Durum: ✅ Tamamlandı
+- Değiştirilen dosyalar:
+  - components/recipes/WidgetCard.tsx — accessibilityLabel prop, AnimatedPressable'a iletildi
+  - components/recipes/RecipeListItem.tsx — accessibilityRole/label eklendi
+  - components/recipes/FavoriteButton.tsx — accessibilityRole/label/state eklendi
+  - components/recipes/ExpandedOverlay.tsx — kapat butonu, backdrop, header, list label
+  - components/home/FilterChip.tsx — label + accessibilityState.selected
+  - components/home/RecipeSearchBox.tsx — TextInput accessibilityRole/label/hint, send button label
+  - components/home/CameraCapture.tsx — camera button label/hint
+  - components/home/CalorieResultCard.tsx — summary role, reset button label
+  - components/calorie/TotalCaloriesHeader.tsx — label, unit, number label
+  - components/calorie/CalorieBreakdownList.tsx — list role, row labels
+  - components/calorie/NutrientCard.tsx — list role, card labels
+  - app/(tabs)/settings.tsx — header role
+  - app/(tabs)/recipes.tsx — header role, screen label
+
 ---
 
 ## 🔄 Devam Eden / Yarım Kalan
@@ -142,10 +186,10 @@ Son Güncelleme: 09.05.2026
 | 9 | RecipeListItem + FavoriteButton | ✅ Tamamlandı |
 | 10 | Home ekranı — FilterChip + RecipeSearchBox | ✅ Tamamlandı |
 | 11 | CameraCapture + LoadingAnalysis | ✅ Tamamlandı |
-| 12 | CalorieResult ekranı (3 alt component) | ⬜ Bekliyor |
-| 13 | Settings placeholder | ⬜ Bekliyor |
-| 14 | Animasyonların ince ayarı | ⬜ Bekliyor |
-| 15 | Accessibility eklemeleri | ⬜ Bekliyor |
+| 12 | CalorieResult ekranı (3 alt component) | ✅ Tamamlandı |
+| 13 | Settings placeholder | ✅ Tamamlandı |
+| 14 | Animasyonların ince ayarı | ✅ Tamamlandı |
+| 15 | Accessibility eklemeleri | ✅ Tamamlandı |
 
 ---
 
@@ -159,9 +203,15 @@ project-root/
 │   └── (tabs)/
 │       ├── _layout.tsx
 │       ├── index.tsx
-│       └── recipes.tsx
+│       ├── recipes.tsx
+│       └── settings.tsx          ← YENİ (Adım 13)
 ├── components/
+│   ├── calorie/                  ← YENİ KLASÖR (Adım 12)
+│   │   ├── CalorieBreakdownList.tsx
+│   │   ├── NutrientCard.tsx
+│   │   └── TotalCaloriesHeader.tsx
 │   ├── home/
+│   │   ├── CalorieResultCard.tsx ← YENİ (Adım 12)
 │   │   ├── CameraCapture.tsx
 │   │   ├── FilterChip.tsx
 │   │   ├── FilterChipRow.tsx

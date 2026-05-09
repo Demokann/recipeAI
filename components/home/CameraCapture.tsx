@@ -39,10 +39,12 @@ const CameraCapture = React.memo(() => {
 
   return (
     <View style={styles.container}>
-      <AnimatedPressable 
+      <AnimatedPressable
         onPress={handleCapture}
-        style={styles.cameraButton} 
+        style={styles.cameraButton}
         scaleValue={0.9}
+        accessibilityLabel="Yemeği fotoğrafla"
+        accessibilityHint="Kamerayı açar ve kalori analizi için fotoğraf çeker"
       >
         <MaterialCommunityIcons name="camera" size={32} color="#FFFFFF" />
       </AnimatedPressable>

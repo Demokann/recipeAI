@@ -13,6 +13,7 @@ interface Props {
   variant?: 'small' | 'large';
   onExpand?: (layout: LayoutRectangle) => void;
   style?: ViewStyle;
+  accessibilityLabel?: string;
 }
 
 /**
@@ -24,7 +25,8 @@ const WidgetCard = React.memo(({
   icon,
   variant = 'small',
   onExpand,
-  style
+  style,
+  accessibilityLabel,
 }: Props) => {
   const cardRef = useRef<View>(null);
 
@@ -41,8 +43,9 @@ const WidgetCard = React.memo(({
         style={[
           styles.container,
           variant === 'large' ? styles.largeContainer : styles.smallContainer,
-          style
+          style,
         ]}
+        accessibilityLabel={accessibilityLabel ?? `${title} widget'ını aç`}
       >
         <View style={styles.header}>
           <MaterialCommunityIcons name={icon} size={28} color={colors.accent} />

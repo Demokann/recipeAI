@@ -16,7 +16,11 @@ interface Props {
  */
 const RecipeListItem = React.memo(({ recipe }: Props) => {
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      accessibilityRole="button"
+      accessibilityLabel={`${recipe.name}, ${recipe.description}, ${recipe.calories} kalori`}
+    >
       {/* Thumbnail Mock */}
       <View style={[styles.thumbnail, { backgroundColor: recipe.thumbnail }]} />
       
