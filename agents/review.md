@@ -11,7 +11,7 @@ Bulgularını kısa ve aksiyona dönüştürülebilir formatta çıktıla — pa
 ## 🤖 Model & Yetki Tanımı
 
 ```yaml
-model: gemini-2.5-flash   # Hız öncelikli — inceleme süreci blocking olmamalı
+model: claude-sonnet-4-20250514   # Hız öncelikli — inceleme süreci blocking olmamalı
 temperature: 0.1           # Deterministik, tekrarlanabilir denetim kararları
 thinking_budget: 4000      # Derinlemesine analiz için yeterli
 tools:

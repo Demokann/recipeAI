@@ -12,8 +12,8 @@
 
 ```
 Toplam Adım : 15
-Tamamlanan  : 10
-Kalan       : 5
+Tamamlanan  : 11
+Kalan       : 4
 Son Güncelleme: 09.05.2026
 ```
 
@@ -109,6 +109,14 @@ Son Güncelleme: 09.05.2026
   - app/(tabs)/index.tsx
 - Notlar: Ana sayfa iskeleti, çoklu seçim destekli filtreler ve LLM entegrasyonlu arama kutusu tamamlandı.
 
+### Adım 11 — CameraCapture + LoadingAnalysis
+- Tarih: 09.05.2026 14:30
+- Durum: ✅ Tamamlandı
+- Oluşturulan dosyalar:
+  - components/home/CameraCapture.tsx
+  - components/home/LoadingAnalysis.tsx
+- Notlar: Kamera mock akışı ve animasyonlu analiz yükleme ekranı sisteme dahil edildi.
+
 ---
 
 ## 🔄 Devam Eden / Yarım Kalan
@@ -133,7 +141,7 @@ Son Güncelleme: 09.05.2026
 | 8 | ExpandedOverlay animasyonu | ✅ Tamamlandı |
 | 9 | RecipeListItem + FavoriteButton | ✅ Tamamlandı |
 | 10 | Home ekranı — FilterChip + RecipeSearchBox | ✅ Tamamlandı |
-| 11 | CameraCapture + LoadingAnalysis | ⬜ Bekliyor |
+| 11 | CameraCapture + LoadingAnalysis | ✅ Tamamlandı |
 | 12 | CalorieResult ekranı (3 alt component) | ⬜ Bekliyor |
 | 13 | Settings placeholder | ⬜ Bekliyor |
 | 14 | Animasyonların ince ayarı | ⬜ Bekliyor |
@@ -154,8 +162,10 @@ project-root/
 │       └── recipes.tsx
 ├── components/
 │   ├── home/
+│   │   ├── CameraCapture.tsx
 │   │   ├── FilterChip.tsx
 │   │   ├── FilterChipRow.tsx
+│   │   ├── LoadingAnalysis.tsx
 │   │   └── RecipeSearchBox.tsx
 │   ├── navigation/
 │   │   └── CustomBottomTab.tsx

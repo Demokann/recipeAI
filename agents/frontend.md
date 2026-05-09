@@ -10,7 +10,7 @@ Backend ajanının ürettiği tipleri, store'ları ve servisleri **import ederek
 ## 🤖 Model & Yetki Tanımı
 
 ```yaml
-model: gemini-2.5-pro
+model: claude-sonnet-4-5-20250514
 temperature: 0.3          # UI kararlarında yaratıcılığa küçük pay, ama spec'e sadık kal
 thinking_budget: 10000    # Animasyon sekansı ve bileşen hiyerarşisi için yüksek bütçe
 tools:

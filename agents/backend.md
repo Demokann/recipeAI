@@ -10,7 +10,7 @@ UI render etmez, JSX yazmaz (sadece store hook çıktıları). Saf iş mantığ�
 ## 🤖 Model & Yetki Tanımı
 
 ```yaml
-model: gemini-2.5-pro
+model: claude-sonnet-4-5-20250514
 temperature: 0.1          # Tip güvenliği ve deterministik veri yapıları için çok düşük
 thinking_budget: 6000     # Karmaşık tip hiyerarşisi ve store tasarımı için
 tools:

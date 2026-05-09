@@ -9,7 +9,7 @@ Kod üretmezsin. Görevin: adım sıralaması, bağımlılık yönetimi, senkron
 ## 🤖 Model & Yetki Tanımı
 
 ```yaml
-model: gemini-2.5-flash
+model: claude-sonnet-4-20250514
 temperature: 0.2          # Deterministik planlama kararları için düşük tutulur
 thinking_budget: 8000     # Bağımlılık analizi ve sıralama için yeterli
 tools:

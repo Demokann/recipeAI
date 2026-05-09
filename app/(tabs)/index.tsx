@@ -13,14 +13,18 @@ import { spacing } from '../../constants/spacing';
 import { typography } from '../../constants/typography';
 import FilterChipRow from '../../components/home/FilterChipRow';
 import RecipeSearchBox from '../../components/home/RecipeSearchBox';
-import AnimatedPressable from '../../components/shared/AnimatedPressable';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import CameraCapture from '../../components/home/CameraCapture';
+import LoadingAnalysis from '../../components/home/LoadingAnalysis';
+import { useCalorieStore } from '../../store/calorieStore';
 
 /**
  * Ana Sayfa (Home) ekranı.
  * Filtreler, yapay zeka destekli arama ve kalori takip başlatma butonunu içerir.
  */
 export default function HomeScreen() {
+  const isAnalyzing = useCalorieStore((state) => state.isAnalyzing);
+  const currentResult = useCalorieStore((state) => state.currentResult);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
@@ -51,15 +55,26 @@ export default function HomeScreen() {
             <View style={styles.line} />
           </View>
 
-          {/* Calorie Tracker Start Placeholder */}
-          <View style={styles.cameraSection}>
-            <AnimatedPressable style={styles.cameraButton} scaleValue={0.9}>
-              <MaterialCommunityIcons name="camera" size={32} color="#FFFFFF" />
-            </AnimatedPressable>
-            <Text style={styles.cameraText}>Yemeğini fotoğrafla, kalorisini öğren</Text>
+          {/* Calorie Tracker Section */}
+          <View style={styles.calorieSection}>
+            {!currentResult ? (
+              <CameraCapture />
+            ) : (
+              <View style={styles.resultPlaceholder}>
+                <Text style={styles.resultText}>
+                  Analiz Tamamlandı: {currentResult.foodName}
+                </Text>
+                <Text style={styles.resultSubtext}>
+                  (Sonuç ekranı Adım 12'de eklenecek)
+                </Text>
+              </View>
+            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Loading Overlay */}
+      <LoadingAnalysis visible={isAnalyzing} />
     </SafeAreaView>
   );
 }
@@ -108,29 +123,29 @@ const styles = StyleSheet.create({
     fontSize: typography.caption,
     color: colors.textMuted,
   },
-  cameraSection: {
+  calorieSection: {
+    paddingBottom: spacing.xxl,
+  },
+  resultPlaceholder: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing.xxl,
+    padding: spacing.xxl,
+    marginHorizontal: spacing.xxl,
+    backgroundColor: colors.cardBg,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderStyle: 'dashed',
   },
-  cameraButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: colors.accent,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-    shadowColor: colors.accent,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
+  resultText: {
+    fontFamily: typography.bodyFontBold,
+    fontSize: typography.body,
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
   },
-  cameraText: {
-    fontFamily: typography.bodyFontMedium,
-    fontSize: typography.bodySmall,
-    color: colors.textSecondary,
-    textAlign: 'center',
+  resultSubtext: {
+    fontFamily: typography.bodyFont,
+    fontSize: typography.caption,
+    color: colors.textMuted,
   },
 });
