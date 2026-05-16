@@ -8,9 +8,10 @@ import { typography } from '../../constants/typography';
 import { shadows } from '../../constants/shadows';
 import { suggestRecipes } from '../../services/geminiService';
 import { useFilterStore } from '../../store/filterStore';
-import { LLMResponse } from '../../types/recipe';
+import { LLMResponse, Recipe } from '../../types/recipe';
 import AnimatedPressable from '../shared/AnimatedPressable';
 import GlassContainer from '../shared/GlassContainer';
+import RecipeDetailOverlay from '../recipes/RecipeDetailOverlay';
 
 /**
  * Yapay zeka destekli tarif arama kutusu.
@@ -21,6 +22,7 @@ const RecipeSearchBox = React.memo(() => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<LLMResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const selectedFilters = useFilterStore((state) => state.selectedFilters);
 
   const handleSearch = useCallback(async () => {
@@ -78,13 +80,27 @@ const RecipeSearchBox = React.memo(() => {
           style={styles.resultContainer}
         >
           <Text style={styles.resultTitle}>Önerilen Tarifler ✨</Text>
-          {result.recipes.map((recipe, index) => (
-            <Text key={recipe.id} style={styles.resultText}>
-              {index + 1}. {recipe.name}
-            </Text>
+          {result.recipes.map((recipe) => (
+            <AnimatedPressable
+              key={recipe.id}
+              onPress={() => setSelectedRecipe(recipe)}
+              style={styles.recipeRow}
+              accessibilityLabel={`${recipe.name} tarifinin detayını aç`}
+              accessibilityRole="button"
+            >
+              <View style={[styles.recipeDot, { backgroundColor: recipe.thumbnail }]} />
+              <Text style={styles.resultText}>{recipe.name}</Text>
+              <Feather name="chevron-right" size={16} color={colors.textMuted} />
+            </AnimatedPressable>
           ))}
         </Animated.View>
       )}
+
+      <RecipeDetailOverlay
+        visible={selectedRecipe !== null}
+        recipe={selectedRecipe}
+        onClose={() => setSelectedRecipe(null)}
+      />
 
       {error && (
         <Animated.View
@@ -151,11 +167,24 @@ const styles = StyleSheet.create({
     color: colors.accent,
     marginBottom: spacing.xs,
   },
+  recipeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
+  recipeDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    flexShrink: 0,
+  },
   resultText: {
     fontFamily: typography.bodyFont,
     fontSize: typography.caption,
     color: colors.textSecondary,
     lineHeight: typography.caption * 1.4,
+    flex: 1,
   },
   errorContainer: {
     borderColor: '#FFCDD2',

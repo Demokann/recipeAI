@@ -10,7 +10,8 @@ export interface Recipe {
   prepTime: number; // dakika cinsinden
   tags: string[];
   thumbnail: string; // hex renk kodu veya resim URL'si
-  ingredients?: string[];
+  ingredients: string[];
+  steps: string[];
 }
 
 /**

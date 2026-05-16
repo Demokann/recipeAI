@@ -26,33 +26,26 @@ import { shadows } from '../../constants/shadows';
 import { typography } from '../../constants/typography';
 import { Recipe } from '../../types/recipe';
 import GlassContainer from '../shared/GlassContainer';
-import RecipeListItem from './RecipeListItem';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
-
 const SPRING_CONFIG = { mass: 0.7, damping: 18, stiffness: 180 };
 
 interface Props {
   visible: boolean;
   onClose: () => void;
-  title: string;
-  icon: keyof typeof MaterialCommunityIcons.glyphMap;
-  recipes?: Recipe[];
-  initialLayout: { x: number; y: number; width: number; height: number } | null;
+  recipe: Recipe | null;
 }
 
-interface ListItemProps {
-  recipe: Recipe;
+interface StaggeredItemProps {
+  children: React.ReactNode;
   index: number;
+  baseDelay?: number;
 }
 
-/**
- * Stagger animasyonuyla beliren tek tarif satırı.
- */
-const StaggeredItem = React.memo(({ recipe, index }: ListItemProps) => {
+const StaggeredItem = React.memo(({ children, index, baseDelay = 150 }: StaggeredItemProps) => {
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(20);
-  const staggerDelay = 150 + index * 50;
+  const staggerDelay = baseDelay + index * 50;
 
   useEffect(() => {
     opacity.value = withDelay(staggerDelay, withTiming(1, { duration: 250, easing: Easing.out(Easing.quad) }));
@@ -64,44 +57,20 @@ const StaggeredItem = React.memo(({ recipe, index }: ListItemProps) => {
     transform: [{ translateY: translateY.value }],
   }));
 
-  return (
-    <Animated.View style={style}>
-      <RecipeListItem recipe={recipe} />
-      <View style={styles.itemDivider} />
-    </Animated.View>
-  );
+  return <Animated.View style={style}>{children}</Animated.View>;
 });
 
 StaggeredItem.displayName = 'StaggeredItem';
 
-/**
- * Widget genişlediğinde açılan glassmorphism overlay.
- * Spec animasyon sekansı:
- *   t=0ms   backdrop fade in (withTiming 300ms)
- *   t=50ms  içerik container translateY: 60→0 + opacity: 0→1 (withSpring)
- *   t=150ms list stagger, her öğe +50ms delay
- * Kapanma: swipe down (velocityY>500 || translationY>100) veya X butonu
- */
-const ExpandedOverlay = React.memo(({
-  visible,
-  onClose,
-  title,
-  icon,
-  recipes,
-  initialLayout,
-}: Props) => {
+const RecipeDetailOverlay = React.memo(({ visible, onClose, recipe }: Props) => {
   const backdropOpacity = useSharedValue(0);
   const contentTranslateY = useSharedValue(60);
   const contentOpacity = useSharedValue(0);
   const panTranslateY = useSharedValue(0);
 
-  const displayRecipes = recipes ?? [];
-
   useEffect(() => {
     if (visible) {
-      // t=0ms: backdrop opacity 0→1 (withTiming 300ms)
       backdropOpacity.value = withTiming(1, { duration: 300, easing: Easing.out(Easing.quad) });
-      // t=50ms: içerik translateY 60→0 + opacity 0→1
       contentTranslateY.value = withDelay(50, withSpring(0, SPRING_CONFIG));
       contentOpacity.value = withDelay(50, withTiming(1, { duration: 250 }));
       panTranslateY.value = 0;
@@ -147,6 +116,10 @@ const ExpandedOverlay = React.memo(({
     ],
   }));
 
+  if (!recipe) return null;
+
+  const ingredientCount = recipe.ingredients.length;
+
   return (
     <Modal
       transparent
@@ -154,8 +127,8 @@ const ExpandedOverlay = React.memo(({
       animationType="none"
       onRequestClose={handleClose}
       accessibilityViewIsModal
+      accessibilityLabel={`${recipe.name} detayları`}
     >
-      {/* Yarı saydam arka plan */}
       <Animated.View style={[styles.backdrop, backdropStyle]}>
         <Pressable
           style={StyleSheet.absoluteFill}
@@ -165,37 +138,28 @@ const ExpandedOverlay = React.memo(({
         />
       </Animated.View>
 
-      {/* Kart container */}
       <View style={styles.centerContainer} pointerEvents="box-none">
         <PanGestureHandler
           onGestureEvent={onGestureEvent}
-          onHandlerStateChange={(e) => e.nativeEvent.state === 5 && onGestureEnd(e as PanGestureHandlerGestureEvent)}
+          onHandlerStateChange={(e) =>
+            e.nativeEvent.state === 5 && onGestureEnd(e as PanGestureHandlerGestureEvent)
+          }
         >
           <Animated.View style={[styles.cardContainer, containerStyle]}>
             <GlassContainer style={styles.glass}>
-              {/* Swipe handle */}
-              <View
-                style={styles.handleBar}
-                accessibilityRole="none"
-                accessibilityLabel="Aşağı kaydır, kapat"
-              />
+              <View style={styles.handleBar} accessibilityRole="none" />
 
-              {/* Header */}
               <View style={styles.header}>
-                <View style={styles.titleRow}>
-                  <MaterialCommunityIcons name={icon} size={28} color={colors.accent} />
-                  <Text
-                    style={styles.title}
-                    accessibilityRole="header"
-                  >
-                    {title}
-                  </Text>
+                <View style={[styles.thumbnailCircle, { backgroundColor: recipe.thumbnail }]} />
+                <View style={styles.titleGroup}>
+                  <Text style={styles.title} numberOfLines={2}>{recipe.name}</Text>
+                  <Text style={styles.meta}>{recipe.prepTime} dk · {recipe.calories} kcal</Text>
                 </View>
                 <Pressable
                   onPress={handleClose}
                   style={styles.closeButton}
                   accessibilityRole="button"
-                  accessibilityLabel={`${title} panelini kapat`}
+                  accessibilityLabel={`${recipe.name} detayını kapat`}
                   hitSlop={8}
                 >
                   <MaterialCommunityIcons name="close" size={24} color={colors.textMuted} />
@@ -204,30 +168,35 @@ const ExpandedOverlay = React.memo(({
 
               <View style={styles.divider} />
 
-              {/* Tarif listesi — stagger animasyonuyla */}
-              {displayRecipes.length === 0 ? (
-                <View style={styles.emptyState}>
-                  <MaterialCommunityIcons
-                    name="heart-off-outline"
-                    size={48}
-                    color={colors.accent}
-                    style={styles.emptyIcon}
-                  />
-                  <Text style={styles.emptyText}>Henüz favori tarifin yok</Text>
-                </View>
-              ) : (
-                <ScrollView
-                  style={styles.content}
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={styles.scrollList}
-                  accessibilityRole="list"
-                  accessibilityLabel={`${title} tarif listesi`}
-                >
-                  {displayRecipes.map((recipe, index) => (
-                    <StaggeredItem key={recipe.id} recipe={recipe} index={index} />
-                  ))}
-                </ScrollView>
-              )}
+              <ScrollView
+                style={styles.content}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.scrollContent}
+              >
+                <Text style={styles.sectionTitle}>İçindekiler</Text>
+                {recipe.ingredients.map((ingredient, index) => (
+                  <StaggeredItem key={`ing-${index}`} index={index} baseDelay={150}>
+                    <View style={styles.ingredientRow}>
+                      <View style={styles.dot} />
+                      <Text style={styles.ingredientText}>{ingredient}</Text>
+                    </View>
+                  </StaggeredItem>
+                ))}
+
+                <View style={styles.sectionSpacer} />
+
+                <Text style={styles.sectionTitle}>Yapılışı</Text>
+                {recipe.steps.map((step, index) => (
+                  <StaggeredItem key={`step-${index}`} index={ingredientCount + index} baseDelay={150}>
+                    <View style={styles.stepRow}>
+                      <Text style={styles.stepNumber}>{index + 1}.</Text>
+                      <Text style={styles.stepText}>{step}</Text>
+                    </View>
+                  </StaggeredItem>
+                ))}
+
+                <View style={styles.bottomSpacer} />
+              </ScrollView>
             </GlassContainer>
           </Animated.View>
         </PanGestureHandler>
@@ -236,7 +205,7 @@ const ExpandedOverlay = React.memo(({
   );
 });
 
-ExpandedOverlay.displayName = 'ExpandedOverlay';
+RecipeDetailOverlay.displayName = 'RecipeDetailOverlay';
 
 const styles = StyleSheet.create({
   backdrop: {
@@ -252,7 +221,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     width: '100%',
     maxWidth: 500,
-    height: SCREEN_HEIGHT * 0.70,
+    height: SCREEN_HEIGHT * 0.75,
     ...shadows.glass,
   },
   glass: {
@@ -273,24 +242,36 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: spacing.xl,
     paddingTop: spacing.lg,
     paddingBottom: spacing.md,
+    gap: spacing.md,
   },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
+  thumbnailCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    flexShrink: 0,
+  },
+  titleGroup: {
+    flex: 1,
   },
   title: {
-    fontFamily: typography.bodyFontBold,
+    fontFamily: typography.displayFont,
     fontSize: typography.heading2,
     color: colors.textPrimary,
+    lineHeight: typography.heading2 * typography.lineHeightTight,
+  },
+  meta: {
+    fontFamily: typography.bodyFont,
+    fontSize: typography.caption,
+    color: colors.textMuted,
+    marginTop: 2,
   },
   closeButton: {
     padding: spacing.xs,
+    flexShrink: 0,
   },
   divider: {
     height: 1,
@@ -300,31 +281,61 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  scrollList: {
+  scrollContent: {
     paddingHorizontal: spacing.xl,
-    paddingBottom: spacing.xl,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xxl,
   },
-  itemDivider: {
-    height: 1,
-    backgroundColor: colors.borderSubtle,
-    opacity: 0.5,
+  sectionTitle: {
+    fontFamily: typography.bodyFontBold,
+    fontSize: typography.subheading,
+    color: colors.accent,
+    marginBottom: spacing.sm,
   },
-  emptyState: {
-    flex: 1,
-    justifyContent: 'center',
+  ingredientRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    padding: spacing.xl,
+    gap: spacing.sm,
+    paddingVertical: spacing.xs,
   },
-  emptyIcon: {
-    opacity: 0.4,
-    marginBottom: spacing.md,
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: colors.accent,
+    flexShrink: 0,
   },
-  emptyText: {
+  ingredientText: {
     fontFamily: typography.bodyFont,
     fontSize: typography.body,
-    color: colors.textMuted,
-    textAlign: 'center',
+    color: colors.textPrimary,
+    flex: 1,
+  },
+  sectionSpacer: {
+    height: spacing.xl,
+  },
+  stepRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
+  stepNumber: {
+    fontFamily: typography.bodyFontBold,
+    fontSize: typography.body,
+    color: colors.accent,
+    flexShrink: 0,
+    minWidth: 20,
+  },
+  stepText: {
+    fontFamily: typography.bodyFont,
+    fontSize: typography.body,
+    color: colors.textPrimary,
+    lineHeight: typography.body * typography.lineHeightNormal,
+    flex: 1,
+  },
+  bottomSpacer: {
+    height: spacing.xxl,
   },
 });
 
-export default ExpandedOverlay;
+export default RecipeDetailOverlay;

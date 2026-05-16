@@ -98,7 +98,7 @@ export async function suggestRecipes(userInput: string, filters: string[]): Prom
   const prompt =
     `Suggest 3 recipes based on: "${userInput}". Filters: ${filterText}.\n` +
     'Return ONLY a JSON array, no markdown, no explanation, all text in Turkish:\n' +
-    '[{"id":"1","name":"Tarif Adı","description":"1 cümle açıklama","calories":400,"prepTime":20,"tags":[],"thumbnail":"#FF6B6B"}]';
+    '[{"id":"1","name":"Tarif Adı","description":"1 cümle açıklama","calories":400,"prepTime":20,"tags":[],"thumbnail":"#FF6B6B","ingredients":["malzeme 1","malzeme 2","malzeme 3"],"steps":["adım 1","adım 2","adım 3"]}]';
 
   const text = await callGemini([{ text: prompt }]);
 
@@ -121,6 +121,8 @@ export async function suggestRecipes(userInput: string, filters: string[]): Prom
       prepTime: r.prepTime ?? 30,
       tags: r.tags ?? [],
       thumbnail: r.thumbnail ?? '#FF6B6B',
+      ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
+      steps: Array.isArray(r.steps) ? r.steps : [],
     })),
   };
 }

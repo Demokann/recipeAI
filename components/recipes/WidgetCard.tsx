@@ -5,13 +5,15 @@ import { colors } from '../../constants/colors';
 import { spacing, radius } from '../../constants/spacing';
 import { shadows } from '../../constants/shadows';
 import { typography } from '../../constants/typography';
+import { Recipe } from '../../types/recipe';
 import AnimatedPressable from '../shared/AnimatedPressable';
 
 interface Props {
   title: string;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
   variant?: 'small' | 'large';
-  onExpand?: (layout: LayoutRectangle) => void;
+  recipes?: Recipe[];
+  onExpand?: (layout: LayoutRectangle, recipes?: Recipe[]) => void;
   style?: ViewStyle;
   accessibilityLabel?: string;
 }
@@ -24,6 +26,7 @@ const WidgetCard = React.memo(({
   title,
   icon,
   variant = 'small',
+  recipes,
   onExpand,
   style,
   accessibilityLabel,
@@ -32,9 +35,9 @@ const WidgetCard = React.memo(({
 
   const handlePress = useCallback(() => {
     cardRef.current?.measure((x, y, width, height, pageX, pageY) => {
-      onExpand?.({ x: pageX, y: pageY, width, height });
+      onExpand?.({ x: pageX, y: pageY, width, height }, recipes);
     });
-  }, [onExpand]);
+  }, [onExpand, recipes]);
 
   return (
     <View ref={cardRef} collapsable={false} style={variant === 'large' ? styles.fullWidth : styles.flex1}>
@@ -43,7 +46,7 @@ const WidgetCard = React.memo(({
         style={[
           styles.container,
           variant === 'large' ? styles.largeContainer : styles.smallContainer,
-          style,
+          ...(style ? [style] : []),
         ]}
         accessibilityLabel={accessibilityLabel ?? `${title} widget'ını aç`}
       >

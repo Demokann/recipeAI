@@ -11,6 +11,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from '@expo-google-fonts/dm-sans';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
@@ -24,6 +25,8 @@ SplashScreen.preventAutoHideAsync();
  */
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
+    ...Ionicons.font,
+    ...AntDesign.font,
     PlayfairDisplay_700Bold,
     PlayfairDisplay_700Bold_Italic,
     DMSans_400Regular,

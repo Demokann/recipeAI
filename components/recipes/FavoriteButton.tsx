@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,6 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { colors } from '../../constants/colors';
+import { spacing } from '../../constants/spacing';
 import { useFavorites } from '../../hooks/useFavorites';
 import AnimatedPressable from '../shared/AnimatedPressable';
 
@@ -22,7 +23,7 @@ interface Props {
  * Dolu/boş kalp çift katman cross-fade ile renk değişimi sağlar,
  * scale spring ile Reanimated 3'e uygun animasyon verir.
  */
-const FavoriteButton = React.memo(({ recipeId, size = 24 }: Props) => {
+const FavoriteButton = React.memo(({ recipeId, size = 20 }: Props) => {
   const { isFavorite, toggleFavorite } = useFavorites();
   const active = isFavorite(recipeId);
 
@@ -65,16 +66,16 @@ const FavoriteButton = React.memo(({ recipeId, size = 24 }: Props) => {
     >
       {/* Boş kalp (gri) */}
       <Animated.View style={[StyleSheet.absoluteFill, styles.iconCenter, emptyStyle]}>
-        <AntDesign name="hearto" size={size} color={colors.favoriteInactive} />
+        <Ionicons name="heart-outline" size={size} color={colors.favoriteInactive} />
       </Animated.View>
 
       {/* Dolu kalp (kırmızı) */}
       <Animated.View style={[StyleSheet.absoluteFill, styles.iconCenter, filledStyle]}>
-        <AntDesign name="heart" size={size} color={colors.favoriteActive} />
+        <Ionicons name="heart" size={size} color={colors.favoriteActive} />
       </Animated.View>
 
       {/* Invisible placeholder for sizing */}
-      <AntDesign name="hearto" size={size} color="transparent" />
+      <Ionicons name="heart-outline" size={size} color="transparent" />
     </AnimatedPressable>
   );
 });
@@ -83,17 +84,16 @@ FavoriteButton.displayName = 'FavoriteButton';
 
 const styles = StyleSheet.create({
   container: {
-    padding: 8,
+    padding: spacing.xs,
     position: 'relative',
   },
   iconCenter: {
     justifyContent: 'center',
     alignItems: 'center',
-    // padding offset to match container
-    top: 8,
-    left: 8,
-    right: 8,
-    bottom: 8,
+    top: spacing.xs,
+    left: spacing.xs,
+    right: spacing.xs,
+    bottom: spacing.xs,
   },
 });
 
