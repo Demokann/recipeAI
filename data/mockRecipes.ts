@@ -11,6 +11,9 @@ export const mockRecipes: Recipe[] = [
     description: 'Geleneksel Türk lezzeti, protein deposu.',
     calories: 220,
     prepTime: 25,
+    protein: 12,
+    carbs: 30,
+    fat: 6,
     tags: ['vejetaryen', 'düşük-kalori', 'yüksek-protein'],
     thumbnail: '#E8D5B7',
     ingredients: [
@@ -37,6 +40,9 @@ export const mockRecipes: Recipe[] = [
     description: 'Yüksek proteinli, hafif öğle yemeği seçeneği.',
     calories: 380,
     prepTime: 15,
+    protein: 35,
+    carbs: 10,
+    fat: 22,
     tags: ['yüksek-protein', '15-dk'],
     thumbnail: '#B7D5E8',
     ingredients: [
@@ -61,6 +67,9 @@ export const mockRecipes: Recipe[] = [
     description: 'Sağlıklı yağlar içeren pratik kahvaltı.',
     calories: 290,
     prepTime: 10,
+    protein: 8,
+    carbs: 28,
+    fat: 16,
     tags: ['vejetaryen', '15-dk'],
     thumbnail: '#B7E8C8',
     ingredients: [
@@ -85,6 +94,9 @@ export const mockRecipes: Recipe[] = [
     description: 'Tek tencerede kolayca hazırlanan vitamin deposu.',
     calories: 420,
     prepTime: 20,
+    protein: 12,
+    carbs: 65,
+    fat: 12,
     tags: ['vejetaryen', 'tek-tencere'],
     thumbnail: '#E8C8B7',
     ingredients: [
@@ -111,6 +123,9 @@ export const mockRecipes: Recipe[] = [
     description: 'Besleyici ve hafif bir atıştırmalık.',
     calories: 180,
     prepTime: 5,
+    protein: 5,
+    carbs: 22,
+    fat: 8,
     tags: ['vegan', 'düşük-kalori', '15-dk'],
     thumbnail: '#D5B7E8',
     ingredients: [
@@ -134,6 +149,9 @@ export const mockRecipes: Recipe[] = [
     description: 'Omega-3 kaynağı, sağlıklı akşam yemeği.',
     calories: 460,
     prepTime: 20,
+    protein: 42,
+    carbs: 2,
+    fat: 31,
     tags: ['yüksek-protein', 'glutensiz'],
     thumbnail: '#E8B7B7',
     ingredients: [
@@ -158,6 +176,9 @@ export const mockRecipes: Recipe[] = [
     description: 'Vegan dostu, doyurucu sokak lezzeti.',
     calories: 350,
     prepTime: 30,
+    protein: 14,
+    carbs: 45,
+    fat: 13,
     tags: ['vegan'],
     thumbnail: '#E8E0B7',
     ingredients: [
@@ -185,6 +206,9 @@ export const mockRecipes: Recipe[] = [
     description: 'Sadece 3 malzemeyle hazırlanan sağlıklı tatlı.',
     calories: 310,
     prepTime: 15,
+    protein: 10,
+    carbs: 48,
+    fat: 8,
     tags: ['vejetaryen', 'tatlı', '15-dk'],
     thumbnail: '#F5DEB3',
     ingredients: [

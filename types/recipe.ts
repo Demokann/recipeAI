@@ -8,6 +8,9 @@ export interface Recipe {
   description: string;
   calories: number;
   prepTime: number; // dakika cinsinden
+  protein: number; // gram
+  carbs: number;   // gram
+  fat: number;     // gram
   tags: string[];
   thumbnail: string; // hex renk kodu veya resim URL'si
   ingredients: string[];

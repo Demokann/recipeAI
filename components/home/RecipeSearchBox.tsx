@@ -46,13 +46,13 @@ const RecipeSearchBox = React.memo(() => {
       <GlassContainer style={styles.container}>
         <TextInput
           style={styles.input}
-          placeholder="Malzemelerini yaz veya ne yemek istediğini sor..."
+          placeholder="Malzemelerini yaz..."
           placeholderTextColor={colors.textMuted}
           multiline
           value={input}
           onChangeText={setInput}
           accessibilityLabel="Tarif veya malzeme ara"
-          accessibilityHint="Malzemelerini ya da ne yemek istediğini yaz, ardından gönder butonuna bas"
+          accessibilityHint="Malzemelerini yaz, ardından gönder butonuna bas"
           accessibilityRole="search"
         />
         
