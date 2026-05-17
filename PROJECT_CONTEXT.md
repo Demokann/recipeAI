@@ -12,8 +12,8 @@
 ## 🔢 Genel İlerleme
 
 ```
-Toplam Adım : 27
-Tamamlanan  : 23
+Toplam Adım : 30
+Tamamlanan  : 26
 Kalan       : 4  (aktif sprint)
 Son Güncelleme: 17.05.2026
 ```
@@ -285,6 +285,47 @@ Son Güncelleme: 17.05.2026
   - Widget eşlemeleri: Popüler → `getPopularRecipes(20)`, Sana Özel → `getRandomRecipes(5)`, Hızlı Tarifler → `getQuickRecipes(20, prepTime≤20dk)`, Favoriler → `getRecipesByIds(favorites)` (favorites store'a reaktif).
   - `recipesai_db/` klasörü DataGrip proje dosyalarıyla birlikte proje kökünde bırakıldı (kaynak olarak korunuyor).
 
+### Adım 24 — FilterChip animasyon düzeltmesi
+
+- Tarih: 17.05.2026
+- Durum: ✅ Tamamlandı
+- Değiştirilen dosyalar:
+  - `components/home/FilterChip.tsx`
+- Notlar:
+  - **Hata:** Filtre chipine tıklandığında 1–2 saniyelik parlaklık artıp azalma (shimmer) efekti oluşuyordu.
+  - **Kök neden:** `progress` shared value'su `withSpring({ damping: 15 })` ile animate ediliyordu. Default stiffness=100, mass=1 ile damping oranı 0.75 (underdamped). Bu yaylanma `progress` değerini 1.0'ın üzerine taşıyarak `interpolateColor`'ın rengi `colors.accent`'in ötesine (daha parlak) extrapolate etmesine neden oluyordu; ardından ~1 saniyelik salınımla geri dönüyordu.
+  - **Düzeltme:** `withSpring` → `withTiming(200ms)` ile değiştirildi. Renk geçişlerinde yaylanmaya gerek yoktur; overshoot tamamen ortadan kalktı.
+
+### Adım 25 — AI tarif favori özelliği
+
+- Tarih: 17.05.2026
+- Durum: ✅ Tamamlandı
+- Değiştirilen dosyalar:
+  - `store/favoritesStore.ts` ← `savedAiRecipes: Recipe[]` alanı ve CRUD aksiyonları eklendi
+  - `hooks/useFavorites.ts` ← `toggleAiRecipe`, `unsaveAiRecipe`, `isAiSaved`, `savedAiRecipes` expose edildi
+  - `components/recipes/RecipeDetailOverlay.tsx` ← `AiHeartButton` bileşeni + header layout güncellemesi
+  - `app/(tabs)/recipes.tsx` ← Favoriler widget'ı DB + AI favorileri birleştirecek şekilde güncellendi
+- Notlar:
+  - **Depolama kararı:** DB favori tarifleri `favorites: string[]` (sadece ID, AsyncStorage'da) olarak kalıyor; AI önerisi favorileri `savedAiRecipes: Recipe[]` (tam obje, AsyncStorage'da) olarak ayrı tutulur. AI tariflerinin DB'de kaydı olmadığından sadece ID saklamak veri kaybına yol açar.
+  - **`AiHeartButton`:** `RecipeDetailOverlay` header'ına eklendi. `FavoriteButton` ile aynı animasyon: scale spring (1→1.4→1) + cross-fade dolu/boş kalp + haptic feedback. `isAiSaved(recipe.id)` ile durum okunur, `toggleAiRecipe(recipe)` ile toggle edilir.
+  - **Favoriler widget:** `getRecipesByIds(favorites)` (DB) + `savedAiRecipes` (AI) merge edilerek Favoriler listesi oluşturulur. Her ikisi de reaktif: favorites veya savedAiRecipes değiştiğinde widget güncellenir.
+
+### Adım 26 — Favori kaldırma ve layout hata düzeltmeleri
+
+- Tarih: 17.05.2026
+- Durum: ✅ Tamamlandı
+- Değiştirilen dosyalar:
+  - `components/recipes/FavoriteButton.tsx` ← AI farkındalığı eklendi
+  - `components/recipes/RecipeListItem.tsx` ← `recipe` prop'u `FavoriteButton`'a iletildi
+  - `components/recipes/RecipeDetailOverlay.tsx` ← header layout düzeltmesi (actionColumn)
+  - `app/(tabs)/recipes.tsx` ← expanded overlay stale snapshot düzeltmesi
+- Notlar:
+  - **Hata 1 — Favoriden çıkarıldığında listeden silinmiyordu (iki ayrı sebep):**
+    - `FavoriteButton`, AI tarifleri için de `toggleFavorite(id)` (DB yolu) çağırıyordu; bu, AI tarif ID'sini `favorites: string[]`'e yanlış ekliyor, `savedAiRecipes`'ten silmiyordu. Düzeltme: `isAiSaved(id)` önce kontrol edilir; true ise `unsaveAiRecipe(id)` çağrılır; aksi hâlde DB yolu kullanılır. `active` durumu artık `isFavorite(id) || isAiSaved(id)` olarak hesaplanır.
+    - `expandedWidget.recipes` açılış anındaki snapshot'tı, store güncellendiğinde senkronize olmuyordu. Düzeltme: `widgetRecipes` değiştiğinde `setExpandedWidget(prev => ({ ...prev, recipes: updated }))` çağrısıyla açık overlay canlı güncellenir.
+  - **Hata 2 — "Yağ" makrosu görünmüyordu:** Header'da `AiHeartButton` eklenmesi `titleGroup`'un (flex:1) genişliğini ~32 px daraltarak `numberOfLines={1}` ile sınırlanan makro satırının truncate olmasına neden oluyordu. Düzeltme: `closeButton` ve `AiHeartButton` `actionColumn` (`flexDirection: 'column'`) içinde dikey olarak istifle­ndi; bu sayede yatay alan tüketimi tek buton genişliğinde kaldı, `titleGroup` eskisiyle aynı genişliği aldı.
+  - `RecipeListItem` artık `recipe={recipe}` ilettiğinden `FavoriteButton` hem re-add hem remove senaryolarında tam objeye erişebilir.
+
 ---
 
 ## 🔄 Devam Eden / Yarım Kalan
@@ -297,10 +338,10 @@ _Yok._
 
 | #   | Adım                                    | Açıklama                                                                                              | Bağımlılık               |
 | --- | --------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------ |
-| 24  | `userdata.db` + `userSignalsRepository` | `user_signals` ve `recipe_interactions` tabloları; kullanıcı etkileşim kayıt servisi                  | ✅ Adım 23 tamam          |
-| 25  | Kişiselleştirme öneri motoru            | `services/recommendation/personalRecommender.ts` + `keywords.ts`; sinyal tabanlı skorlama algoritması | Adım 24                  |
-| 26  | Recipes ekranı widget güncelleme        | "Sana Özel" → öneri motorundan (şimdilik random)                                                      | Adım 25                  |
-| 27  | Settings ekranı (gerçek içerik)         | Profil, dil, bildirim ayarları                                                                        | —                        |
+| 27  | `userdata.db` + `userSignalsRepository` | `user_signals` ve `recipe_interactions` tabloları; kullanıcı etkileşim kayıt servisi                  | belirsiz — uygulanıp uygulanmayacağı netleşmedi |
+| 28  | Kişiselleştirme öneri motoru            | `services/recommendation/personalRecommender.ts` + `keywords.ts`; sinyal tabanlı skorlama algoritması | Adım 27                  |
+| 29  | Recipes ekranı widget güncelleme        | "Sana Özel" → öneri motorundan (şimdilik random)                                                      | Adım 28                  |
+| 30  | Settings ekranı (gerçek içerik)         | Profil, dil, bildirim ayarları                                                                        | —                        |
 
 ---
 
@@ -345,9 +386,11 @@ project-root/
 │   └── typography.ts
 ├── data/
 │   ├── mockRecipes.ts                 ← @deprecated (Adım 20)
-│   └── recipes.db                    ← placeholder (Adım 20)
+│   └── recipes.db                    ← gerçek DB, 8 tarif (Adım 23)
 ├── hooks/
-│   └── useFavorites.ts
+│   └── useFavorites.ts               ← GÜNCELLENDİ (Adım 25-26 — AI favori helpers)
+├── recipesai_db/                     ← DataGrip kaynak klasörü (Adım 23)
+│   └── recipeai.db
 ├── services/
 │   ├── cameraService.ts              ← GÜNCELLENDİ (Adım 22 — pickFromGallery eklendi)
 │   ├── db/
@@ -359,7 +402,7 @@ project-root/
 │   └── mockLLMService.ts
 ├── store/
 │   ├── calorieStore.ts
-│   ├── favoritesStore.ts
+│   ├── favoritesStore.ts             ← GÜNCELLENDİ (Adım 25 — savedAiRecipes eklendi)
 │   └── filterStore.ts                ← YENİ (Adım 18)
 ├── types/
 │   ├── calorie.ts
@@ -373,9 +416,11 @@ project-root/
 
 ## 🐛 Bilinen Sorunlar / Önemli Kararlar
 
-- **`data/recipes.db` placeholder:** Şu anda sadece Metro bundling için gerekli olan boş bir SQLite dosyasıdır. Gerçek DB eklendikten sonra uygulamanın SQLite dizinindeki önbelleği temizlemek için simülatör/cihazda uygulama silinip yeniden kurulması gerekebilir.
+- **DB önbelleği (ilk kurulum):** `data/recipes.db` değiştikten sonra (Adım 23), uygulamanın SQLite dizinindeki önbelleği temizlemek için simülatör/cihazda uygulama silinip yeniden kurulması gerekebilir.
 - **`expo-file-system` API değişikliği:** SDK 54 (expo-file-system v55) ile `documentDirectory` gibi sabitler ana paketten kaldırıldı; `expo-file-system/legacy` alt yolundan içe aktarılıyor. `services/db/database.ts` buna göre güncellendi.
 - **Mock servisler kaldırılmadı:** `mockLLMService.ts`, `mockCameraService.ts`, `mockCalorieService.ts` dosyaları hâlâ yerinde durmaktadır. Gerçek servisler aktif olduğu için kullanılmıyorlar; ileride temizlenebilir.
+- **AI tarif ID'leri kararsız:** Gemini, her arama için "1", "2", "3" gibi ID'ler döner. Farklı aramalar aynı ID'yi farklı tarife atayabilir; `isAiSaved("1")` yanlış pozitif gösterebilir. Düşük riskli, gerekirse geminiService'te `Date.now()` tabanlı benzersiz ID üretimi eklenebilir.
+- **`userdata.db` belirsiz:** Adım 27 (kullanıcı sinyal DB'si) uygulanıp uygulanmayacağı netleşmedi; kişiselleştirme motoru bu adıma bağımlı.
 
 ---
 
@@ -383,7 +428,9 @@ project-root/
 
 ```
 @PROJECT_CONTEXT.md dosyasını oku.
-Adım 23 tamamlandı: recipes.db entegre edildi, recipes.tsx artık recipeRepository kullanıyor.
-Sıradaki: Adım 24 — userdata.db + userSignalsRepository.
-user_signals ve recipe_interactions tabloları oluşturulacak; kullanıcı etkileşimleri (favori, görüntüleme vb.) kaydedilecek.
+Adım 26'ya kadar tamamlandı (17.05.2026).
+Son oturumda: SQLite DB entegrasyonu, FilterChip animasyon düzeltmesi,
+AI tarif favori özelliği (savedAiRecipes + AiHeartButton), favori kaldırma ve layout hata düzeltmeleri.
+Sıradaki en olası adım: Adım 30 — Settings ekranı (gerçek içerik).
+Adım 27 (userdata.db) belirsiz; kullanıcı uygulanıp uygulanmayacağına karar vermedi.
 ```

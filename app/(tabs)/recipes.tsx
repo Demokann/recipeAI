@@ -16,7 +16,7 @@ import WidgetCard from '../../components/recipes/WidgetCard';
 import ExpandedOverlay from '../../components/recipes/ExpandedOverlay';
 
 export default function RecipesScreen() {
-  const { favorites } = useFavorites();
+  const { favorites, savedAiRecipes } = useFavorites();
 
   const [widgetRecipes, setWidgetRecipes] = useState<Record<string, Recipe[]>>({
     'Popüler': [],
@@ -38,10 +38,10 @@ export default function RecipesScreen() {
   }, []);
 
   useEffect(() => {
-    getRecipesByIds(favorites).then(favRecipes =>
-      setWidgetRecipes(prev => ({ ...prev, 'Favoriler': favRecipes }))
+    getRecipesByIds(favorites).then(dbFavs =>
+      setWidgetRecipes(prev => ({ ...prev, 'Favoriler': [...dbFavs, ...savedAiRecipes] }))
     );
-  }, [favorites]);
+  }, [favorites, savedAiRecipes]);
 
   const [expandedWidget, setExpandedWidget] = useState<{
     title: string;
@@ -49,6 +49,15 @@ export default function RecipesScreen() {
     layout: LayoutRectangle;
     recipes: Recipe[];
   } | null>(null);
+
+  // Keep the open overlay in sync when its recipe list changes (e.g. unfavoriting)
+  useEffect(() => {
+    setExpandedWidget(prev => {
+      if (!prev) return null;
+      const updated = widgetRecipes[prev.title];
+      return updated ? { ...prev, recipes: updated } : prev;
+    });
+  }, [widgetRecipes]);
 
   const handleExpand = useCallback(
     (

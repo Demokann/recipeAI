@@ -10,39 +10,39 @@ import Animated, {
 import * as Haptics from 'expo-haptics';
 import { colors } from '../../constants/colors';
 import { spacing } from '../../constants/spacing';
+import { Recipe } from '../../types/recipe';
 import { useFavorites } from '../../hooks/useFavorites';
 import AnimatedPressable from '../shared/AnimatedPressable';
 
 interface Props {
   recipeId: string;
+  recipe?: Recipe;
   size?: number;
 }
 
-/**
- * Trendyol tarzı animasyonlu favori butonu.
- * Dolu/boş kalp çift katman cross-fade ile renk değişimi sağlar,
- * scale spring ile Reanimated 3'e uygun animasyon verir.
- */
-const FavoriteButton = React.memo(({ recipeId, size = 20 }: Props) => {
-  const { isFavorite, toggleFavorite } = useFavorites();
-  const active = isFavorite(recipeId);
+const FavoriteButton = React.memo(({ recipeId, recipe, size = 20 }: Props) => {
+  const { isFavorite, toggleFavorite, isAiSaved, unsaveAiRecipe, toggleAiRecipe } = useFavorites();
+  const active = isFavorite(recipeId) || isAiSaved(recipeId);
 
   const scale = useSharedValue(1);
-  // 0 = boş/gri, 1 = dolu/kırmızı
   const fillOpacity = useSharedValue(active ? 1 : 0);
 
   const handlePress = useCallback(async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    toggleFavorite(recipeId);
 
-    // Scale spring: 1 → 1.4 → 1 (~350ms)
+    if (isAiSaved(recipeId)) {
+      unsaveAiRecipe(recipeId);
+    } else if (recipe && !isFavorite(recipeId)) {
+      toggleAiRecipe(recipe);
+    } else {
+      toggleFavorite(recipeId);
+    }
+
     scale.value = withSpring(1.4, { mass: 0.3, damping: 8 }, () => {
       scale.value = withSpring(1.0);
     });
-
-    // Cross-fade between empty/filled icons
     fillOpacity.value = withTiming(active ? 0 : 1, { duration: 300 });
-  }, [recipeId, toggleFavorite, active, scale, fillOpacity]);
+  }, [recipeId, recipe, isFavorite, toggleFavorite, isAiSaved, unsaveAiRecipe, toggleAiRecipe, active, scale, fillOpacity]);
 
   const scaleStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],

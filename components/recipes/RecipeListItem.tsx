@@ -35,7 +35,7 @@ const RecipeListItem = React.memo(({ recipe }: Props) => {
       </View>
 
       {/* Action */}
-      <FavoriteButton recipeId={recipe.id} />
+      <FavoriteButton recipeId={recipe.id} recipe={recipe} />
     </View>
   );
 });

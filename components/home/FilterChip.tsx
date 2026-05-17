@@ -3,7 +3,7 @@ import { StyleSheet, Text } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
+  withTiming,
   interpolateColor,
 } from 'react-native-reanimated';
 import { colors } from '../../constants/colors';
@@ -25,7 +25,7 @@ const FilterChip = React.memo(({ label, selected, onPress }: Props) => {
   const progress = useSharedValue(selected ? 1 : 0);
 
   useEffect(() => {
-    progress.value = withSpring(selected ? 1 : 0, { damping: 15 });
+    progress.value = withTiming(selected ? 1 : 0, { duration: 200 });
   }, [selected, progress]);
 
   const handlePress = useCallback(() => {

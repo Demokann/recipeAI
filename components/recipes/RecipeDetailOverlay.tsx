@@ -19,12 +19,14 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { colors } from '../../constants/colors';
 import { spacing, radius } from '../../constants/spacing';
 import { shadows } from '../../constants/shadows';
 import { typography } from '../../constants/typography';
 import { Recipe } from '../../types/recipe';
+import { useFavorites } from '../../hooks/useFavorites';
 import GlassContainer from '../shared/GlassContainer';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -61,6 +63,55 @@ const StaggeredItem = React.memo(({ children, index, baseDelay = 150 }: Staggere
 });
 
 StaggeredItem.displayName = 'StaggeredItem';
+
+const AiHeartButton = React.memo(({ recipe }: { recipe: Recipe }) => {
+  const { isAiSaved, toggleAiRecipe } = useFavorites();
+  const saved = isAiSaved(recipe.id);
+
+  const scale = useSharedValue(1);
+  const fillOpacity = useSharedValue(saved ? 1 : 0);
+
+  useEffect(() => {
+    fillOpacity.value = withTiming(saved ? 1 : 0, { duration: 250 });
+  }, [saved, fillOpacity]);
+
+  const handlePress = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    toggleAiRecipe(recipe);
+    scale.value = withSpring(1.4, { mass: 0.3, damping: 8 }, () => {
+      scale.value = withSpring(1.0);
+    });
+  }, [recipe, toggleAiRecipe, scale]);
+
+  const scaleStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+  const filledStyle = useAnimatedStyle(() => ({ opacity: fillOpacity.value }));
+  const emptyStyle = useAnimatedStyle(() => ({ opacity: 1 - fillOpacity.value }));
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      style={styles.heartButton}
+      accessibilityRole="button"
+      accessibilityLabel={saved ? 'Favorilerden çıkar' : 'Favorilere ekle'}
+      accessibilityState={{ selected: saved }}
+      hitSlop={8}
+    >
+      <Animated.View style={scaleStyle}>
+        <Animated.View style={[StyleSheet.absoluteFill, styles.heartIcon, emptyStyle]}>
+          <Ionicons name="heart-outline" size={22} color={colors.favoriteInactive} />
+        </Animated.View>
+        <Animated.View style={[StyleSheet.absoluteFill, styles.heartIcon, filledStyle]}>
+          <Ionicons name="heart" size={22} color={colors.favoriteActive} />
+        </Animated.View>
+        <Ionicons name="heart-outline" size={22} color="transparent" />
+      </Animated.View>
+    </Pressable>
+  );
+});
+
+AiHeartButton.displayName = 'AiHeartButton';
 
 const RecipeDetailOverlay = React.memo(({ visible, onClose, recipe }: Props) => {
   const backdropOpacity = useSharedValue(0);
@@ -156,15 +207,18 @@ const RecipeDetailOverlay = React.memo(({ visible, onClose, recipe }: Props) => 
                   <Text style={styles.meta}>{recipe.prepTime} dk · {recipe.calories} kcal</Text>
                   <Text style={styles.meta} numberOfLines={1}>Protein {recipe.protein}g · Karb. {recipe.carbs}g · Yağ {recipe.fat}g</Text>
                 </View>
-                <Pressable
-                  onPress={handleClose}
-                  style={styles.closeButton}
-                  accessibilityRole="button"
-                  accessibilityLabel={`${recipe.name} detayını kapat`}
-                  hitSlop={8}
-                >
-                  <MaterialCommunityIcons name="close" size={24} color={colors.textMuted} />
-                </Pressable>
+                <View style={styles.actionColumn}>
+                  <Pressable
+                    onPress={handleClose}
+                    style={styles.closeButton}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${recipe.name} detayını kapat`}
+                    hitSlop={8}
+                  >
+                    <MaterialCommunityIcons name="close" size={24} color={colors.textMuted} />
+                  </Pressable>
+                  <AiHeartButton recipe={recipe} />
+                </View>
               </View>
 
               <View style={styles.divider} />
@@ -270,9 +324,20 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginTop: 2,
   },
+  actionColumn: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    flexShrink: 0,
+  },
+  heartButton: {
+    padding: spacing.xs,
+  },
+  heartIcon: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   closeButton: {
     padding: spacing.xs,
-    flexShrink: 0,
   },
   divider: {
     height: 1,
