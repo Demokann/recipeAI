@@ -153,7 +153,8 @@ const RecipeDetailOverlay = React.memo(({ visible, onClose, recipe }: Props) => 
                 <View style={[styles.thumbnailCircle, { backgroundColor: recipe.thumbnail }]} />
                 <View style={styles.titleGroup}>
                   <Text style={styles.title} numberOfLines={2}>{recipe.name}</Text>
-                  <Text style={styles.meta} numberOfLines={2}>{recipe.prepTime} dk · {recipe.calories} kcal · P {recipe.protein}g · K {recipe.carbs}g · Y {recipe.fat}g</Text>
+                  <Text style={styles.meta}>{recipe.prepTime} dk · {recipe.calories} kcal</Text>
+                  <Text style={styles.meta} numberOfLines={1}>Protein {recipe.protein}g · Karb. {recipe.carbs}g · Yağ {recipe.fat}g</Text>
                 </View>
                 <Pressable
                   onPress={handleClose}

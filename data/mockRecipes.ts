@@ -1,8 +1,8 @@
 import { Recipe } from '../types/recipe';
 
 /**
- * Uygulama genelinde kullanılacak mock tarif verileri.
- * 8 adet tarif, farklı tag kombinasyonları ile.
+ * @deprecated Bu dosya artık kullanılmıyor. Veri kaynağı olarak `services/db/recipeRepository.ts` kullanın.
+ * DB entegrasyonu tamamlandığında silinecek. Şu an fallback ve test amaçlı tutuluyor.
  */
 export const mockRecipes: Recipe[] = [
   {

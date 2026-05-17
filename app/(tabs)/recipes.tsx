@@ -1,28 +1,47 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, SafeAreaView, LayoutRectangle } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from '../../constants/colors';
 import { spacing } from '../../constants/spacing';
 import { typography } from '../../constants/typography';
 import { Recipe } from '../../types/recipe';
-import { mockRecipes } from '../../data/mockRecipes';
 import { useFavorites } from '../../hooks/useFavorites';
+import {
+  getPopularRecipes,
+  getRecipesByIds,
+  getRandomRecipes,
+  getQuickRecipes,
+} from '../../services/db/recipeRepository';
 import WidgetCard from '../../components/recipes/WidgetCard';
 import ExpandedOverlay from '../../components/recipes/ExpandedOverlay';
 
-/**
- * Recipes (Tarifler) ana ekranı.
- * Widget tıklamalarında ExpandedOverlay glassmorphism paneli açılır.
- */
 export default function RecipesScreen() {
   const { favorites } = useFavorites();
 
-  const widgetRecipes = useMemo<Record<string, Recipe[]>>(() => ({
-    'Popüler': mockRecipes,
-    'Favoriler': mockRecipes.filter((r) => favorites.includes(r.id)),
-    'Sana Özel': mockRecipes.slice(0, 5),
-    'Hızlı Tarifler': mockRecipes.filter((r) => r.prepTime <= 20),
-  }), [favorites]);
+  const [widgetRecipes, setWidgetRecipes] = useState<Record<string, Recipe[]>>({
+    'Popüler': [],
+    'Favoriler': [],
+    'Sana Özel': [],
+    'Hızlı Tarifler': [],
+  });
+
+  useEffect(() => {
+    getPopularRecipes(20).then(popular =>
+      setWidgetRecipes(prev => ({ ...prev, 'Popüler': popular }))
+    );
+    getRandomRecipes(5).then(random =>
+      setWidgetRecipes(prev => ({ ...prev, 'Sana Özel': random }))
+    );
+    getQuickRecipes(20).then(quick =>
+      setWidgetRecipes(prev => ({ ...prev, 'Hızlı Tarifler': quick }))
+    );
+  }, []);
+
+  useEffect(() => {
+    getRecipesByIds(favorites).then(favRecipes =>
+      setWidgetRecipes(prev => ({ ...prev, 'Favoriler': favRecipes }))
+    );
+  }, [favorites]);
 
   const [expandedWidget, setExpandedWidget] = useState<{
     title: string;

@@ -5,7 +5,8 @@
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "build:db": "node data/seed/build-db.js"
   },
   "dependencies": {
     "@expo-google-fonts/dm-sans": "^0.2.3",

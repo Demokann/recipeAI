@@ -15,6 +15,7 @@ export interface Recipe {
   thumbnail: string; // hex renk kodu veya resim URL'si
   ingredients: string[];
   steps: string[];
+  category?: 'yemek' | 'icecek'; // DB entegrasyonunda zorunlu hale gelecek
 }
 
 /**
