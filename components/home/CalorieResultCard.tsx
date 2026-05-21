@@ -34,7 +34,7 @@ const CalorieResultCard = React.memo(({ result }: Props) => {
     >
       {/* Yemek adı */}
       <View style={styles.foodNameRow}>
-        <Text style={styles.foodName} numberOfLines={1}>
+        <Text style={styles.foodName}>
           {result.foodName}
         </Text>
         <AnimatedPressable
