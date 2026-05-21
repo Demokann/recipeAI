@@ -39,7 +39,7 @@ export default function HomeScreen() {
         >
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.greeting}>İyi günler 👋</Text>
+            
             <Text style={styles.headerTitle}>Bugün ne pişiriyoruz?</Text>
           </View>
 

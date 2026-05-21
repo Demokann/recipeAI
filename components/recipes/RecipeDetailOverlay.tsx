@@ -217,7 +217,7 @@ const RecipeDetailOverlay = React.memo(({ visible, onClose, recipe }: Props) => 
                   >
                     <MaterialCommunityIcons name="close" size={24} color={colors.textMuted} />
                   </Pressable>
-                  <AiHeartButton recipe={recipe} />
+                  <AiHeartButton key={recipe.id} recipe={recipe} />
                 </View>
               </View>
 

@@ -5,7 +5,8 @@
       "Bash(Select-Object -First 30)",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\kaank\\\\Proje\\\\recipeAI\\\\recipeAI\" -Recurse -Force | Select-Object -First 50 | ForEach-Object { $_.FullName })",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\kaank\\\\Proje\\\\recipeAI\\\\recipeAI\\\\constants\" -Force | ForEach-Object { $_.Name })",
-      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\kaank\\\\Proje\\\\recipeAI\\\\recipeAI\\\\components\\\\recipes\" -Force | ForEach-Object { $_.Name })"
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\kaank\\\\Proje\\\\recipeAI\\\\recipeAI\\\\components\\\\recipes\" -Force | ForEach-Object { $_.Name })",
+      "Bash(npx tsc *)"
     ]
   }
 }

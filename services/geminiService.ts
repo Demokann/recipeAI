@@ -112,10 +112,11 @@ export async function suggestRecipes(userInput: string, filters: string[]): Prom
 
   const recipeList = Array.isArray(parsed) ? parsed : (parsed.recipes ?? []);
 
+  const searchTs = Date.now();
   return {
     suggestion: '',
     recipes: recipeList.map((r: any, i: number) => ({
-      id: r.id ?? `gemini-${i}`,
+      id: `ai_${searchTs}_${i}`,
       name: r.name,
       description: r.description ?? '',
       calories: r.calories ?? 0,

@@ -30,6 +30,7 @@ const RecipeSearchBox = React.memo(() => {
 
     setLoading(true);
     setResult(null);
+    setSelectedRecipe(null);
     setError(null);
     try {
       const response = await suggestRecipes(input, selectedFilters);
