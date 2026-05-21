@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { colors } from '../../constants/colors';
 import { spacing, radius } from '../../constants/spacing';
 import { typography } from '../../constants/typography';
@@ -8,22 +8,20 @@ import FavoriteButton from './FavoriteButton';
 
 interface Props {
   recipe: Recipe;
+  onPress?: () => void;
 }
 
-/**
- * Tarif listesi öğesi.
- * Görsel (mock renk), metinler ve favori butonu içerir.
- */
-const RecipeListItem = React.memo(({ recipe }: Props) => {
+const RecipeListItem = React.memo(({ recipe, onPress }: Props) => {
   return (
-    <View
+    <Pressable
+      onPress={onPress}
       style={styles.container}
       accessibilityRole="button"
       accessibilityLabel={`${recipe.name}, ${recipe.description}, ${recipe.calories} kalori`}
     >
       {/* Thumbnail Mock */}
       <View style={[styles.thumbnail, { backgroundColor: recipe.thumbnail }]} />
-      
+
       {/* Text Group */}
       <View style={styles.textGroup}>
         <Text style={styles.name} numberOfLines={1}>
@@ -36,7 +34,7 @@ const RecipeListItem = React.memo(({ recipe }: Props) => {
 
       {/* Action */}
       <FavoriteButton recipeId={recipe.id} recipe={recipe} />
-    </View>
+    </Pressable>
   );
 });
 

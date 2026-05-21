@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   StyleSheet,
   View,
@@ -27,6 +27,10 @@ import { typography } from '../../constants/typography';
 import { Recipe } from '../../types/recipe';
 import GlassContainer from '../shared/GlassContainer';
 import RecipeListItem from './RecipeListItem';
+// RecipeDetailOverlay bu bileşen içinde fragment olarak render edilir.
+// recipes.tsx'ten değil buradan mount edilmesi zorunlu — aksi hâlde
+// ExpandedOverlay Modal'ının arkasında kalır ve tıklama bloke olur.
+import RecipeDetailOverlay from './RecipeDetailOverlay';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -44,12 +48,10 @@ interface Props {
 interface ListItemProps {
   recipe: Recipe;
   index: number;
+  onPress?: () => void;
 }
 
-/**
- * Stagger animasyonuyla beliren tek tarif satırı.
- */
-const StaggeredItem = React.memo(({ recipe, index }: ListItemProps) => {
+const StaggeredItem = React.memo(({ recipe, index, onPress }: ListItemProps) => {
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(20);
   const staggerDelay = 150 + index * 50;
@@ -66,7 +68,7 @@ const StaggeredItem = React.memo(({ recipe, index }: ListItemProps) => {
 
   return (
     <Animated.View style={style}>
-      <RecipeListItem recipe={recipe} />
+      <RecipeListItem recipe={recipe} onPress={onPress} />
       <View style={styles.itemDivider} />
     </Animated.View>
   );
@@ -97,11 +99,20 @@ const ExpandedOverlay = React.memo(({
 
   const displayRecipes = recipes ?? [];
 
+  // Detay overlay state — burada tutulur, recipes.tsx'e taşınmaz.
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+
+  const handleRecipePress = useCallback((recipe: Recipe) => {
+    setSelectedRecipe(recipe);
+  }, []);
+
+  const handleDetailClose = useCallback(() => {
+    setSelectedRecipe(null);
+  }, []);
+
   useEffect(() => {
     if (visible) {
-      // t=0ms: backdrop opacity 0→1 (withTiming 300ms)
       backdropOpacity.value = withTiming(1, { duration: 300, easing: Easing.out(Easing.quad) });
-      // t=50ms: içerik translateY 60→0 + opacity 0→1
       contentTranslateY.value = withDelay(50, withSpring(0, SPRING_CONFIG));
       contentOpacity.value = withDelay(50, withTiming(1, { duration: 250 }));
       panTranslateY.value = 0;
@@ -224,7 +235,12 @@ const ExpandedOverlay = React.memo(({
                   accessibilityLabel={`${title} tarif listesi`}
                 >
                   {displayRecipes.map((recipe, index) => (
-                    <StaggeredItem key={recipe.id} recipe={recipe} index={index} />
+                    <StaggeredItem
+                      key={recipe.id}
+                      recipe={recipe}
+                      index={index}
+                      onPress={() => handleRecipePress(recipe)}
+                    />
                   ))}
                 </ScrollView>
               )}
@@ -232,6 +248,17 @@ const ExpandedOverlay = React.memo(({
           </Animated.View>
         </PanGestureHandler>
       </View>
+
+      {/* RecipeDetailOverlay bu Modal'ın JSX'i içinde render edilir.
+          Böylece iç Modal, dış Modal'ın VC'sinden (iOS) / Dialog context'inden (Android)
+          sunulur ve liste overlay'inin ÜSTÜNDE görünür.
+          Fragment sibling pattern'da root VC'den sunulan iç Modal, dış Modal'ın
+          arkasında kalıyordu. */}
+      <RecipeDetailOverlay
+        visible={!!selectedRecipe}
+        onClose={handleDetailClose}
+        recipe={selectedRecipe}
+      />
     </Modal>
   );
 });

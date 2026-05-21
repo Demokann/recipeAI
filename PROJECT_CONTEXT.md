@@ -13,9 +13,9 @@
 
 ```
 Toplam Adım : 30
-Tamamlanan  : 26
-Kalan       : 4  (aktif sprint)
-Son Güncelleme: 17.05.2026
+Tamamlanan  : 27
+Kalan       : 3  (aktif sprint)
+Son Güncelleme: 21.05.2026
 ```
 
 ---
@@ -326,6 +326,32 @@ Son Güncelleme: 17.05.2026
   - **Hata 2 — "Yağ" makrosu görünmüyordu:** Header'da `AiHeartButton` eklenmesi `titleGroup`'un (flex:1) genişliğini ~32 px daraltarak `numberOfLines={1}` ile sınırlanan makro satırının truncate olmasına neden oluyordu. Düzeltme: `closeButton` ve `AiHeartButton` `actionColumn` (`flexDirection: 'column'`) içinde dikey olarak istifle­ndi; bu sayede yatay alan tüketimi tek buton genişliğinde kaldı, `titleGroup` eskisiyle aynı genişliği aldı.
   - `RecipeListItem` artık `recipe={recipe}` ilettiğinden `FavoriteButton` hem re-add hem remove senaryolarında tam objeye erişebilir.
 
+### Adım 27 — Tarif detay tıklanabilirlik + Modal layering bug fix
+
+- Tarih: 21.05.2026
+- Durum: ✅ Tamamlandı
+- Değiştirilen dosyalar:
+  - `components/recipes/RecipeListItem.tsx` ← kök eleman `View`→`Pressable`, `onPress?: () => void` prop eklendi
+  - `components/recipes/ExpandedOverlay.tsx` ← `selectedRecipe` state + `handleRecipePress/handleDetailClose` callback'leri + `RecipeDetailOverlay` Modal JSX içine taşındı
+  - `app/(tabs)/recipes.tsx` ← SafeAreaView import düzeltmesi (`react-native` → `react-native-safe-area-context`)
+  - `app/(tabs)/index.tsx` ← aynı SafeAreaView import düzeltmesi
+  - `app/(tabs)/settings.tsx` ← aynı SafeAreaView import düzeltmesi
+  - `components/home/CalorieResultCard.tsx` ← yiyecek adı tam görünsün diye `numberOfLines={1}` kaldırıldı
+- Notlar:
+  - **Özellik:** `ExpandedOverlay` içindeki `RecipeListItem`'lara tıklanınca `RecipeDetailOverlay` açılıyor. AI öneri detay ekranıyla aynı bileşen; yeni bileşen oluşturulmadı.
+  - **Kök neden (Senaryo C — Modal layering):** `RecipeDetailOverlay` fragment kardeşi olarak `<></><Modal/><RecipeDetailOverlay/></>` şeklinde konumlandırıldığında, RN 0.81 + Expo 54 kombinasyonunda her iki Modal da root VC'den sunuldu; traversal sırası güvenilmez olduğundan iç Modal liste Modal'ının arkasında kaldı.
+  - **Çözüm:** `RecipeDetailOverlay` doğrudan `ExpandedOverlay`'in `<Modal>` JSX'i içine taşındı. Böylece iç Modal, dış Modal'ın VC bağlamından sunuluyor ve her zaman üstte görünüyor. `selectedRecipe` state'i `ExpandedOverlay` içinde kalmaya devam ediyor; `recipes.tsx`'e sızmıyor.
+
+---
+
+## 📜 İterasyon Geçmişi
+
+### İterasyon — Tarif Detay Modal Layering Bug Fix (21.05.2026)
+
+- **Senaryo:** C — RecipeDetailOverlay açılıyordu ancak liste Modal'ının arkasında kalıyordu.
+- **Değiştirilen dosyalar:** `components/recipes/RecipeListItem.tsx`, `components/recipes/ExpandedOverlay.tsx`, `app/(tabs)/recipes.tsx`, `app/(tabs)/index.tsx`, `app/(tabs)/settings.tsx`, `components/home/CalorieResultCard.tsx`
+- **Kök neden + çözüm:** Fragment kardeşi Modal pattern'ında (`<><Modal/><RecipeDetailOverlay/></>`) her iki Modal kendi ayrı root VC zincirinden sunuluyordu; RN 0.81'deki VC traversal sırası belirsiz olduğundan `RecipeDetailOverlay` liste Modal'ının altında görünüyordu. `RecipeDetailOverlay` `ExpandedOverlay`'in `<Modal>` JSX'i içine taşınarak iç Modal'ın dış Modal'ın VC bağlamından sunulması sağlandı — bu yapı iOS'ta iç Modal'ı her zaman dış Modal'ın üstüne koyar.
+
 ---
 
 ## 🔄 Devam Eden / Yarım Kalan
@@ -338,9 +364,8 @@ _Yok._
 
 | #   | Adım                                    | Açıklama                                                                                              | Bağımlılık               |
 | --- | --------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------ |
-| 27  | `userdata.db` + `userSignalsRepository` | `user_signals` ve `recipe_interactions` tabloları; kullanıcı etkileşim kayıt servisi                  | belirsiz — uygulanıp uygulanmayacağı netleşmedi |
-| 28  | Kişiselleştirme öneri motoru            | `services/recommendation/personalRecommender.ts` + `keywords.ts`; sinyal tabanlı skorlama algoritması | Adım 27                  |
-| 29  | Recipes ekranı widget güncelleme        | "Sana Özel" → öneri motorundan (şimdilik random)                                                      | Adım 28                  |
+| 28  | `userdata.db` + `userSignalsRepository` | `user_signals` ve `recipe_interactions` tabloları; kullanıcı etkileşim kayıt servisi                  | belirsiz — uygulanıp uygulanmayacağı netleşmedi |
+| 29  | Kişiselleştirme öneri motoru            | `services/recommendation/personalRecommender.ts` + `keywords.ts`; sinyal tabanlı skorlama algoritması | Adım 28                  |
 | 30  | Settings ekranı (gerçek içerik)         | Profil, dil, bildirim ayarları                                                                        | —                        |
 
 ---
@@ -428,9 +453,10 @@ project-root/
 
 ```
 @PROJECT_CONTEXT.md dosyasını oku.
-Adım 26'ya kadar tamamlandı (17.05.2026).
-Son oturumda: SQLite DB entegrasyonu, FilterChip animasyon düzeltmesi,
-AI tarif favori özelliği (savedAiRecipes + AiHeartButton), favori kaldırma ve layout hata düzeltmeleri.
+Adım 27'ye kadar tamamlandı (21.05.2026).
+Son oturumda: Tarifler sekmesindeki recipe list item'larına tıklanınca RecipeDetailOverlay açılıyor.
+Modal layering bug'ı düzeltildi: RecipeDetailOverlay fragment kardeşi değil, ExpandedOverlay'in
+<Modal> JSX'i içinde render ediliyor. SafeAreaView import'ları 3 ekran dosyasında düzeltildi.
 Sıradaki en olası adım: Adım 30 — Settings ekranı (gerçek içerik).
-Adım 27 (userdata.db) belirsiz; kullanıcı uygulanıp uygulanmayacağına karar vermedi.
+Adım 28 (userdata.db) belirsiz; kullanıcı uygulanıp uygulanmayacağına karar vermedi.
 ```
